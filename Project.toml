@@ -1,0 +1,12 @@
+name = "LinA"
+uuid = "f599c993-2677-4f60-8998-71feb0f665db"
+authors = ["Julien Codsi <julien.codsi@umontreal.ca>"]
+version = "0.9.0"
+
+[deps]
+CDDLib = "3391f64e-dcde-5f30-b752-e11513730f60"
+Calculus = "49dc2e85-a5d0-5ad3-a950-438e2897f1b9"
+GeneralizedGenerated = "6b9d7cbe-bcb9-11e9-073f-15a7a543e2eb"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Polyhedra = "67491407-f73d-577b-9b50-8179a7c68029"
+Roots = "f2b01f46-fcfa-551c-844a-d8ac1e96c665"

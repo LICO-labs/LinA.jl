@@ -1,0 +1,86 @@
+
+
+import LinearAlgebra.adjoint , Base.-, Base.+
+
+using Calculus
+
+#to use the ' notattion for derivative (which was standard notation in Calculus.jl)
+adjoint(f::Function) = derivative(f) 
+
+-(expr::Expr) = :(($expr) * -1)
+paraToFncLin(a,b) = x -> a*x + b
+
+
+struct LinearPiece
+    xMin::Real
+    xMax::Real
+    a::Real
+    b::Real
+    fct::Function
+end
+
+(l::LinearPiece)(x::Real) = l.fct(x)
+-(p::LinearPiece) = LinearPiece(p.xMin,p.xMax,-p.a,-p.b,paraToFncLin(-p.a,-p.b))
++(p::LinearPiece,x::Real) = LinearPiece(p.xMin,p.xMax,p.a,p.b + x,paraToFncLin(p.a,p.b + x))
+-(p::LinearPiece,x::Real) = LinearPiece(p.xMin,p.xMax,p.a,p.b - x,paraToFncLin(p.a,p.b - x))
+
+
+
+#evaluate a pieceWise linear function
+function (pwl::Array{LinearPiece, 1})(x::Real)
+    
+    if x < pwl[1].xMin || x > pwl[end].xMax
+        throw(DomainError(x, "argument must be in the domain of the function"))
+    end
+    
+    starts = getfield.(pwl,:xMin)
+    pieceIndex = searchsortedlast(starts,x)
+    return pwl[pieceIndex](x)
+    
+end
+
++(pwl::Array{LinearPiece, 1}, x::Real) = pwl .+ x
+-(pwl::Array{LinearPiece, 1}, x::Real) = pwl .- x
+
+
+abstract type ErrorType end
+
+struct Absolute <: ErrorType
+    delta::Real
+end
+
+struct Relative <: ErrorType
+    percent::Real
+end
+
+abstract type BoundingType end
+
+struct Best <:BoundingType end
+struct Under <:BoundingType end
+struct Over <:BoundingType end
+struct UnderOver <:BoundingType end
+
+-(::Under) = Over()
+-(::Over) = Under()
+-(x::Best) = x
+
+
+abstract type AbstractAlgorithm end
+struct HeuristicLin <:AbstractAlgorithm end
+struct ExactLin <:AbstractAlgorithm end
+
+#For the exact method
+
+struct dataError
+    x::Real
+    yMin::Real
+    yMax::Real
+end
+
+function fctSample(x, lower, upper) #(fct::function, lower::function, upper::function)
+    
+    return dataError(x,lower(x),upper(x))
+end
+;
+
+    
