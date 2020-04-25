@@ -1,6 +1,6 @@
 
 
-import LinearAlgebra.adjoint , Base.-, Base.+
+import LinearAlgebra.adjoint , Base.-, Base.+, Base.show
 
 using Calculus
 
@@ -18,6 +18,12 @@ struct LinearPiece
     b::Real
     fct::Function
 end
+
+
+function Base.show(io::IO, m::LinearPiece)
+   print(io,m.a," x ",m.b >= 0 ? "+ " : "",m.b," from ",m.xMin," to ",m.xMax) 
+end
+
 
 (l::LinearPiece)(x::Real) = l.fct(x)
 -(p::LinearPiece) = LinearPiece(p.xMin,p.xMax,-p.a,-p.b,paraToFncLin(-p.a,-p.b))
