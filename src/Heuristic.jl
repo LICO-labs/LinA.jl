@@ -10,7 +10,7 @@ function HeuristicLin(expr_fct::Expr,x1::Real,x2::Real, e::ErrorType; bounding =
     #reset_timer!(tot)
     
     if x1 >= x2
-        return Float64[]
+        return Array{LinearPiece}(undef, 0)
     end
     
    # @timeit tot "concave split " begin
