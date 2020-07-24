@@ -16,21 +16,21 @@ function seconde_derive(expr_fnc::Expr)
      d2_expr = Calculus.simplify(d2_expr)
     return d2_expr
 end
-    
-    
+
+
 
  function decoupageConvavite(x1::Real,x2::Real,expr_fnc::Expr)
-    
-    d2_f = seconde_derive(expr_fnc) 
+
+    d2_f = seconde_derive(expr_fnc)
     temp =  mk_function(:((x -> $d2_f)))
-    f(x) = temp(x) 
+    f(x) = temp(x)
     #@eval f(x) = $d2_f
-    
+
     try
         #return Base.invokelatest(find_zeros,f,x1,x2)
         return find_zeros(f,x1,x2)
     catch y
-        println(y)
+        #println(y)
         #si la dérivée est une constante find zeros lance une erreur
            if isa(y, InexactError)
             if differentiate(d2_f, :x) == 0
@@ -40,6 +40,6 @@ end
            end
        end
 end
-    
+
 
 #end
