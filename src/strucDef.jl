@@ -2,16 +2,19 @@
 
 import LinearAlgebra.adjoint , Base.-, Base.+, Base.show
 
-using Calculus
+using Calculus, ForwardDiff
+
+const Ef=Union{Expr, Function}
 
 #to use the ' notattion for derivative (which was standard notation in Calculus.jl)
-adjoint(f::Function) = derivative(f) 
+adjoint(f::Function) = derivative(f)
 
--(expr::Expr) = :(($expr) * -1)
+-(expr::Expr) = Expr(:call, :-, expr)
+#-(expr::Expr) = :(($expr) * -1)
 paraToFncLin(a,b) = x -> a*x + b
 
 
-struct LinearPiece
+struct LinearPiece <: Function
     xMin::Real
     xMax::Real
     a::Real
@@ -21,7 +24,7 @@ end
 
 
 function Base.show(io::IO, m::LinearPiece)
-   print(io,m.a," x ",m.b >= 0 ? "+ " : "",m.b," from ",m.xMin," to ",m.xMax) 
+   print(io,m.a," x ",m.b >= 0 ? "+ " : "",m.b," from ",m.xMin," to ",m.xMax)
 end
 
 
@@ -34,15 +37,15 @@ end
 
 #evaluate a pieceWise linear function
 function (pwl::Array{LinearPiece, 1})(x::Real)
-    
+
     if x < pwl[1].xMin || x > pwl[end].xMax
         throw(DomainError(x, "argument must be in the domain of the function"))
     end
-    
+
     starts = getfield.(pwl,:xMin)
     pieceIndex = searchsortedlast(starts,x)
     return pwl[pieceIndex](x)
-    
+
 end
 
 +(pwl::Array{LinearPiece, 1}, x::Real) = pwl .+ x
@@ -84,9 +87,16 @@ struct dataError
 end
 
 function fctSample(x, lower, upper) #(fct::function, lower::function, upper::function)
-    
+
     return dataError(x,lower(x),upper(x))
 end
-;
 
-    
+#for polymorphism between symbolic and not symbolic
+fctMaker(e::Expr) = mk_function(:((x -> $e)))
+fctMaker(e::Function) = e
+fctMaker(x::Number) = x->x
+derive(x::Number) = 0  
+derive(expr::Expr) = Calculus.simplify(differentiate(expr, :x))
+derive(f::Function) = z->ForwardDiff.gradient(x->f(x[1]),[z])[1]
+
+;
