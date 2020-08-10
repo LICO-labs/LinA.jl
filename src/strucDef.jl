@@ -10,6 +10,7 @@ const Ef=Union{Expr, Function}
 adjoint(f::Function) = derivative(f)
 
 -(expr::Expr) = Expr(:call, :-, expr)
+-(f::function) = x->-f(x)
 #-(expr::Expr) = :(($expr) * -1)
 paraToFncLin(a,b) = x -> a*x + b
 
@@ -95,7 +96,7 @@ end
 fctMaker(e::Expr) = mk_function(:((x -> $e)))
 fctMaker(e::Function) = e
 fctMaker(x::Number) = x->x
-derive(x::Number) = 0  
+derive(x::Number) = 0
 derive(expr::Expr) = Calculus.simplify(differentiate(expr, :x))
 derive(f::Function) = z->ForwardDiff.gradient(x->f(x[1]),[z])[1]
 
