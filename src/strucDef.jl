@@ -10,7 +10,7 @@ const Ef=Union{Expr, Function}
 adjoint(f::Function) = derivative(f)
 
 -(expr::Expr) = Expr(:call, :-, expr)
--(f::function) = x->-f(x)
+-(f::Function) = x->-f(x)
 #-(expr::Expr) = :(($expr) * -1)
 paraToFncLin(a,b) = x -> a*x + b
 
