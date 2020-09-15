@@ -95,7 +95,7 @@ end
 #for polymorphism between symbolic and not symbolic
 fctMaker(e::Expr) = mk_function(:((x -> $e)))
 fctMaker(e::Function) = e
-fctMaker(x::Number) = x->x
+fctMaker(x::Number) = y->x
 derive(x::Number) = 0
 derive(expr::Expr) = Calculus.simplify(differentiate(expr, :x))
 derive(f::Function) = z->ForwardDiff.gradient(x->f(x[1]),[z])[1]
