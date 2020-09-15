@@ -16,6 +16,9 @@ seconde_derive(fct::Ef) = derive(derive(fct))
  function decoupageConvavite(x1::Real,x2::Real,expr_fnc::Ef)
 
     d2_f = seconde_derive(expr_fnc)
+    #special case for constant second derivative
+    typeof(d2_f) <: Number && return Float64[]
+
     temp =  fctMaker(d2_f)
     f(x) = temp(x)
     #@eval f(x) = $d2_f
