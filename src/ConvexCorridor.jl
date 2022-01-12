@@ -1,5 +1,4 @@
-#using Roots
-#include("strucDef.jl")
+
 
 """
     LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
@@ -13,12 +12,12 @@ Makes an optimal piecewise Linear approximation from x1 to x2 of a convex corrid
 """
 function LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
 
-    #TODO mettre la tolérence en paramètre
-    tol = 0.00001 #10.0^(-5)
+    
+    tol = 0.00001 
     slope = 0.0;
     b = 0.0;
     pwl = Array{LinearPiece}(undef, 0)
-    #x1 = round(x1_initial, digits = digits)
+    
 
     lin(x) = slope * x + b
     #Δ represent the distance between the linear function and the bottom of the corridor

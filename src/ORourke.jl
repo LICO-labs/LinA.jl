@@ -1,7 +1,7 @@
 
 using Polyhedra, CDDLib
 
-#2020/03/13
+
 function pointPlane(p::dataError)
     # a and b are the variables to optimize
     # -x*a - b < - ymin
@@ -32,12 +32,10 @@ function ORourke(pts)
     end
 
     
-    #on prend un point quelconque dans le polygone de contraintes des coef
+    #We take any arbitrary point in the polyhedra (here the "center")
     verticesPoly = collect(points(doubledescription(poly)))
-
     lineCoef = sum(verticesPoly)/length(verticesPoly)
     
-    #on le transforme en segement de droite
     line =  LinearPiece(coveredPts[1].x,coveredPts[end].x,lineCoef[1],lineCoef[2],x-> lineCoef[1]*x + lineCoef[2])
     
     return line

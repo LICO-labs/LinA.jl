@@ -24,7 +24,7 @@ struct LinearPiece <: Function
 end
 
 
-function Base.show(io::IO, m::LinearPiece)
+function Base.show(io::IO,::MIME"text/plain", m::LinearPiece)
    print(io,m.a," x ",m.b >= 0 ? "+ " : "",m.b," from ",m.xMin," to ",m.xMax)
 end
 

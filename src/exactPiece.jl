@@ -1,9 +1,9 @@
-#TODO Remove derivative from intersection criteria
+
 include("ORourke.jl")
 
 function exactPiece(start::Real,maximum::Real,lower,upper)
     
-    newMax = maximum
+    #newMax = maximum
     line = LinearPiece(0,0,0,0,x->0)
     pts = collect(range(start,maximum,length=40))
     data = fctSample.(pts, lower,upper)
@@ -25,25 +25,26 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
             topDistance = x-> upper(x) - line.fct(x)
             lowerDistance = x-> line.fct(x) - lower(x)
             
+            #try catch to handle rare cases with function asymptotic to zero
             try
                 topIntersec = find_zeros(topDistance,line.xMin,line.xMax)
-                catch
-                    topIntersec = []
-                finally
+            catch
+                topIntersec = []
             end
             
             try
                 lowIntersec = find_zeros(lowerDistance,line.xMin,line.xMax)
-                catch
-                finally
-            
+            catch
+                lowIntersec = []
             end
             
             crossing = false
             
             for i in 1: length(topIntersec) -1
-            
-                if topDistance'(topIntersec[i]) < 0
+                
+                #other criteria if differentiable
+                #if topDistance'(topIntersec[i]) < 0
+                if topDistance((topIntersec[i]+topIntersec[i+1])/2) < 0
                     push!(pts,(topIntersec[i]+topIntersec[i+1])/2)
                     crossing = true;
                 end
@@ -51,9 +52,13 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
             end
             
             for i in 1: length(lowIntersec) -1
-            
-                if lowerDistance'(lowIntersec[i]) < 0
+                
+                #other criteria if differentiable
+                #if lowerDistance'(lowIntersec[i]) < 0
+                
+                if lowerDistance((lowIntersec[i] + lowIntersec[i+1])/2) < 0
                     push!(pts,(lowIntersec[i] + lowIntersec[i+1])/2)
+                    push!(pts,lowIntersec[i])
                     crossing = true;
                 end
                 
@@ -62,12 +67,13 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
         end
 
         lastCovered = line.xMax
-        #pourrait être plus élégant ici
+        
         if lastCovered == pts[end]
             return line
         end
         
-        index = findall(x -> x == lastCovered , pts)[1]
+        
+        index = findfirst(isequal(lastCovered), pts)
         notCover = pts[index+1]
         
         
