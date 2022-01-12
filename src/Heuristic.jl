@@ -15,7 +15,7 @@ function HeuristicLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = B
 
    # @timeit tot "concave split " begin
         if ConcavityChanges == [Inf]
-            ConcavityChanges = decoupageConvavite(x1,x2,expr_fct)
+            ConcavityChanges = decoupageConcavite(x1,x2,expr_fct)
         end
     #end
 

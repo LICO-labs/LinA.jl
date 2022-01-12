@@ -1,12 +1,11 @@
-#TODO Find/Fix bug (Fixed?) exactPiece(x->x^3-0.1,x->x^3 + 0.1,-1.61045,3.0)
+#TODO Remove derivative from intersection criteria
 include("ORourke.jl")
 
 function exactPiece(start::Real,maximum::Real,lower,upper)
     
     newMax = maximum
     line = LinearPiece(0,0,0,0,x->0)
-    pts =  Array{Float64}(undef, 40) + collect(1:40)
-    pts = map(x-> (x-1) * (maximum - start) /39 + start,pts)
+    pts = collect(range(start,maximum,length=40))
     data = fctSample.(pts, lower,upper)
     
     succes=false;
@@ -22,6 +21,7 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
             sort!(pts)
             data = fctSample.(pts, lower,upper)
             line = ORourke(data)
+            
             topDistance = x-> upper(x) - line.fct(x)
             lowerDistance = x-> line.fct(x) - lower(x)
             
@@ -52,7 +52,7 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
             
             for i in 1: length(lowIntersec) -1
             
-                if topDistance'(lowIntersec[i]) < 0
+                if lowerDistance'(lowIntersec[i]) < 0
                     push!(pts,(lowIntersec[i] + lowIntersec[i+1])/2)
                     crossing = true;
                 end

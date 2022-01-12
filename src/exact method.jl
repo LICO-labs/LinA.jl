@@ -8,8 +8,8 @@ function exactLin(expr_fct::Expr,x1::Real,x2::Real, e::ErrorType; bounding = Bes
     end
    
     
-    if ConcavityChanges[1] == Inf
-        ConcavityChanges = decoupageConvavite(x1,x2,expr_fct)
+    if ConcavityChanges == [Inf]
+        ConcavityChanges = decoupageConcavite(x1,x2,expr_fct)
     end
     ConcavityChanges = [x1;ConcavityChanges;x2] 
     ConcavityChanges = sort(unique(ConcavityChanges)) # make sure that the bounds are there
@@ -21,14 +21,14 @@ function exactLin(expr_fct::Expr,x1::Real,x2::Real, e::ErrorType; bounding = Bes
     while x1 < x2
         i = searchsortedfirst(ConcavityChanges,x1)
         ConcavityChanges[i] == x1 ? x2Temp = ConcavityChanges[i+1] : x2Temp = ConcavityChanges[i]
-        #println(x1,"  ",x2Temp)
+
         pwl = [pwl;Linearize(expr_fct, x1, x2Temp, e,bounding = bounding,ConcavityChanges=[] )] 
         pwl[end].xMax == x2 && break
-        #println(pwl)
-        #println("hello") 
+
         pwl[end] = exactPiece(pwl[end].xMin,x2,cor...)
+
         pwl[end].xMax == x2 && break
-        #println(pwl,"\n\n\n")
+
         x1 = pwl[end].xMax
     end
     return pwl

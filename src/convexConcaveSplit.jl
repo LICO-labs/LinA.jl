@@ -13,7 +13,7 @@ seconde_derive(fct::Ef) = derive(derive(fct))
 
 
 
- function decoupageConvavite(x1::Real,x2::Real,expr_fnc::Ef)
+ function decoupageConcavite(x1::Real,x2::Real,expr_fnc::Ef)
 
     d2_f = seconde_derive(expr_fnc)
     #special case for constant second derivative

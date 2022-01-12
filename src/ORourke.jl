@@ -17,26 +17,25 @@ function ORourke(pts)
     coveredPts = [popfirst!(pts)];
     
    
-    while !isempty(pts) && !isempty(polyhedron(poly, CDDLib.Library(:float)))
-        #isempty(poly,CplexSolver(CPX_PARAM_SCRIND = 0))
+    while !isempty(pts) && !isempty(polyhedron(poly, CDDLib.Library(:exact))) 
         
         temp = copy(poly);
         poly = poly ∩ pointPlane(pts[1])
-        push!(coveredPts,popfirst!(pts)) #careeeeeeeee
-        
+        push!(coveredPts,popfirst!(pts)) 
     end
+   
     
     
-    if isempty(polyhedron(poly, CDDLib.Library(:float)))
-        #isempty(poly,CplexSolver(CPX_PARAM_SCRIND = 0))
+    if isempty(polyhedron(poly, CDDLib.Library(:exact)))
         pop!(coveredPts)
         poly = temp
     end
 
     
     #on prend un point quelconque dans le polygone de contraintes des coef
-    veticesPoly = collect(points(doubledescription(poly)))
-    lineCoef = (veticesPoly[1].+ veticesPoly[end])./2
+    verticesPoly = collect(points(doubledescription(poly)))
+
+    lineCoef = sum(verticesPoly)/length(verticesPoly)
     
     #on le transforme en segement de droite
     line =  LinearPiece(coveredPts[1].x,coveredPts[end].x,lineCoef[1],lineCoef[2],x-> lineCoef[1]*x + lineCoef[2])
