@@ -6,7 +6,7 @@ include("ConvexCorridor.jl")
 
 function HeuristicLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = Best() ::BoundingType,
                     ConcavityChanges = [Inf]::Array{Float64,1},m = HeuristicLin() ::AbstractAlgorithm )
-    #reset_timer!(tot)
+    
 
     if x1 >= x2
         return Array{LinearPiece}(undef, 0)

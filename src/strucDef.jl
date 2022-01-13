@@ -37,6 +37,7 @@ end
 
 
 #evaluate a pieceWise linear function
+
 function (pwl::Array{LinearPiece, 1})(x::Real)
 
     if x < pwl[1].xMin || x > pwl[end].xMax
@@ -87,7 +88,7 @@ struct dataError
     yMax::Real
 end
 
-function fctSample(x, lower, upper) #(fct::function, lower::function, upper::function)
+function fctSample(x, lower, upper) 
 
     return dataError(x,lower(x),upper(x))
 end

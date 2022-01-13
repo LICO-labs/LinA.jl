@@ -1,6 +1,16 @@
 
 include("ORourke.jl")
 
+"""
+    exactPiece(start::Real,maximum::Real,lower,upper)
+
+Computes the maximal linear piece starting at `start` which lies in between `lower` and `upper`. Works for any continuous `lower` and `upper`.
+# Arguments
+- `start` : from
+- `maximum` : maximal end point of the linear segment
+- `lower` : lower bound of the corridor
+- `upper` : upper bound of the corridor
+"""
 function exactPiece(start::Real,maximum::Real,lower,upper)
     
     #newMax = maximum
@@ -45,6 +55,7 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
                 #other criteria if differentiable
                 #if topDistance'(topIntersec[i]) < 0
                 if topDistance((topIntersec[i]+topIntersec[i+1])/2) < 0
+                    push!(pts,topIntersec[i])
                     push!(pts,(topIntersec[i]+topIntersec[i+1])/2)
                     crossing = true;
                 end

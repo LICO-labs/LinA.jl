@@ -13,7 +13,7 @@ Makes an optimal piecewise Linear approximation of expr_fct from x1 to x2. The r
 - `e` : error type either Absolute() or Relative()
 
 # Optional Arguments
-- `bounding` : `Under()` for an underestimation, `Over()` for an overestimation, `Best()` for estimation that can go under or over the function, `UnderOver()` for both an underestimation and an overestimation in two separate estimations ( saves a lot of overhead over calling `Over()` and `Under()` separately). By default, it uses `Best()`
+- `bounding` : `Under()` for an underestimation, `Over()` for an overestimation, `Best()` for estimation that can go under or over the function. By default, it uses `Best()`
 - `ConcavityChanges` : Concavity changes in the function. If not given, they will be computed automatically which, in rare cases, can lead to precision errors if the concavity is asymptotic to zero. 
 
 # Example
