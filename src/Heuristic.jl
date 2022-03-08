@@ -48,6 +48,7 @@ function HeuristicLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = B
         corridor = corridorFromInfo(x1,x2,expr,e,bounds)
         tempCorridor = LinearizeConvex(corridor...)
         
+        
         inverted ? push!(pwl, -tempCorridor...) : push!(pwl, tempCorridor...)
 
     end

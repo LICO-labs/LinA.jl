@@ -16,7 +16,7 @@ function ORourke(pts)
     temp = poly;
     coveredPts = [popfirst!(pts)];
     
-   
+   #add points until no line is feasible or all pts are covered
     while !isempty(pts) && !isempty(polyhedron(poly, CDDLib.Library(:exact))) 
         
         temp = copy(poly);

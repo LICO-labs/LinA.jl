@@ -12,8 +12,10 @@ Computes the maximal linear piece starting at `start` which lies in between `low
 - `upper` : upper bound of the corridor
 """
 function exactPiece(start::Real,maximum::Real,lower,upper)
+    #TODO: add epsilon as an argument for the user
     
     #newMax = maximum
+    epsilon = 1e-5 #numerical precision 
     line = LinearPiece(0,0,0,0,x->0)
     pts = collect(range(start,maximum,length=40))
     data = fctSample.(pts, lower,upper)
@@ -31,7 +33,8 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
             sort!(pts)
             data = fctSample.(pts, lower,upper)
             line = ORourke(data)
-            
+
+            #find if the solution on the discretized problem works on the original problem 
             topDistance = x-> upper(x) - line.fct(x)
             lowerDistance = x-> line.fct(x) - lower(x)
             
@@ -47,6 +50,7 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
             catch
                 lowIntersec = []
             end
+
             
             crossing = false
             
@@ -54,7 +58,7 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
                 
                 #other criteria if differentiable
                 #if topDistance'(topIntersec[i]) < 0
-                if topDistance((topIntersec[i]+topIntersec[i+1])/2) < 0
+                if topDistance((topIntersec[i]+topIntersec[i+1])/2) <- epsilon
                     push!(pts,topIntersec[i])
                     push!(pts,(topIntersec[i]+topIntersec[i+1])/2)
                     crossing = true;
@@ -66,8 +70,8 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
                 
                 #other criteria if differentiable
                 #if lowerDistance'(lowIntersec[i]) < 0
-                
-                if lowerDistance((lowIntersec[i] + lowIntersec[i+1])/2) < 0
+                if lowerDistance((lowIntersec[i] + lowIntersec[i+1])/2) < - epsilon
+                    
                     push!(pts,(lowIntersec[i] + lowIntersec[i+1])/2)
                     push!(pts,lowIntersec[i])
                     crossing = true;
@@ -76,6 +80,7 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
             end
             
         end
+
 
         lastCovered = line.xMax
         
@@ -86,16 +91,16 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
         
         index = findfirst(isequal(lastCovered), pts)
         notCover = pts[index+1]
-        
-        
-        if notCover - lastCovered < 0.0001 #|| notCover == newMax
+
+        #verify if 
+        if notCover - lastCovered < epsilon #|| notCover == newMax
             return line
         end
     
         
         pts = pts[1 : index + 1 ]
         
-        
+        # Heuristic to achieve faster convergence (try exenting the segment until goes out of corridor)
         lExtend = maximum
         uExtend = maximum
         
@@ -110,6 +115,7 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
         furthest = min(uExtend,lExtend)
         push!(pts, furthest)
         push!(pts, (notCover + furthest)/2 )
+        push!(pts, (notCover + lastCovered)/2 )
         #newMax = notCover
         
         

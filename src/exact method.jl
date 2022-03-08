@@ -1,7 +1,7 @@
 
 include("exactPiece.jl")
 
-function exactLin(expr_fct::Expr,x1::Real,x2::Real, e::ErrorType; bounding = Best() ::BoundingType, 
+function exactLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = Best() ::BoundingType, 
                     ConcavityChanges = [Inf]::Array{Float64,1} )
     if x1 >= x2
         return Float64[]
@@ -19,12 +19,16 @@ function exactLin(expr_fct::Expr,x1::Real,x2::Real, e::ErrorType; bounding = Bes
     x2Temp = -1
     i=1
     while x1 < x2
+        
+        #find next concavity change
         i = searchsortedfirst(ConcavityChanges,x1)
         ConcavityChanges[i] == x1 ? x2Temp = ConcavityChanges[i+1] : x2Temp = ConcavityChanges[i]
-
+        
+        #first apply the algortihm for the convex/concave segement
         pwl = [pwl;Linearize(expr_fct, x1, x2Temp, e,bounding = bounding,ConcavityChanges=[] )] 
         pwl[end].xMax == x2 && break
-
+        
+        #Replace the last segment by one obtain with the general algorithm
         pwl[end] = exactPiece(pwl[end].xMin,x2,cor...)
 
         pwl[end].xMax == x2 && break
