@@ -27,7 +27,7 @@ function exactLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = Best(
         #first apply the algortihm for the convex/concave segement
         pwl = [pwl;Linearize(expr_fct, x1, x2Temp, e,bounding = bounding,ConcavityChanges=[] )] 
         pwl[end].xMax == x2 && break
-        
+
         #Replace the last segment by one obtain with the general algorithm
         pwl[end] = exactPiece(pwl[end].xMin,x2,cor...)
 

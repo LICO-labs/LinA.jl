@@ -14,8 +14,8 @@ Computes the maximal linear piece starting at `start` which lies in between `low
 function exactPiece(start::Real,maximum::Real,lower,upper)
     #TODO: add epsilon as an argument for the user
     
-    #newMax = maximum
-    epsilon = 1e-5 #numerical precision 
+    #numerical precision 
+    epsilon = 1e-5 
     line = LinearPiece(0,0,0,0,x->0)
     pts = collect(range(start,maximum,length=40))
     data = fctSample.(pts, lower,upper)
@@ -59,25 +59,34 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
                 #other criteria if differentiable
                 #if topDistance'(topIntersec[i]) < 0
                 if topDistance((topIntersec[i]+topIntersec[i+1])/2) <- epsilon
+                    
                     push!(pts,topIntersec[i])
                     push!(pts,(topIntersec[i]+topIntersec[i+1])/2)
+                    push!(pts,topIntersec[i+1])
+                    
+                    #previously any precision of 1e-5 or below very rarely caused an infinite loop here because of the conversion 
+                    #Rational{BigInt} <->  float64 used in ORourke ( method CDDLib.Library(:exact)) which is why randomization was used
+                    push!(pts,randomMidPoint(topIntersec[i], topIntersec[i+1]))
+                    
                     crossing = true;
                 end
                 
             end
             
             for i in 1: length(lowIntersec) -1
-                
                 #other criteria if differentiable
                 #if lowerDistance'(lowIntersec[i]) < 0
                 if lowerDistance((lowIntersec[i] + lowIntersec[i+1])/2) < - epsilon
                     
-                    push!(pts,(lowIntersec[i] + lowIntersec[i+1])/2)
+                    
                     push!(pts,lowIntersec[i])
-                    crossing = true;
+                    push!(pts,(lowIntersec[i] + lowIntersec[i+1])/2)
+                    push!(pts,lowIntersec[i+1])
+                
                 end
                 
             end
+            
             
         end
 
@@ -116,7 +125,7 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
         push!(pts, furthest)
         push!(pts, (notCover + furthest)/2 )
         push!(pts, (notCover + lastCovered)/2 )
-        #newMax = notCover
+
         
         
     end

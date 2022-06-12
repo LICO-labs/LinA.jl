@@ -93,6 +93,11 @@ function fctSample(x, lower, upper)
     return dataError(x,lower(x),upper(x))
 end
 
+function randomMidPoint(x::Number,y::Number)
+    r = rand()
+    r * x + (1-r) * y
+end
+
 #for polymorphism between symbolic and not symbolic
 fctMaker(e::Expr) = mk_function(:((x -> $e)))
 fctMaker(e::Function) = e
