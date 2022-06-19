@@ -13,6 +13,7 @@ Computes the maximal linear piece starting at `start` which lies in between `low
 """
 function exactPiece(start::Real,maximum::Real,lower,upper)
     #TODO: add epsilon as an argument for the user
+    #TODO: If intersections are epsilon close skip intersections
     
     #numerical precision 
     epsilon = 1e-5 
