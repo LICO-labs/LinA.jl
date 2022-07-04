@@ -1,11 +1,11 @@
 # LinA.jl
-LinA is a piecewise linear approximation package which approximates univariate diffentiable functions with an optimal piecewise linear function in term of number of pieces given a error metric.
-Both absolute and relative errors are implemented. It is also possible to add custom error type. LinA work expression as well as with native Julia functions and
+LinA is a piecewise linear approximation package which approximates univariate diffentiable functions with an optimal (in term of number of segments) piecewise linear function given an error metric.
+Both absolute and relative errors are implemented. It is also possible to add custom error types. LinA works with expressions as well as with native Julia functions.
 Details of the algorithms can be found in [this paper.](https://hal.archives-ouvertes.fr/hal-03336003)
 
 ## Installation
 
-To install LinA, first, enter Pkg mode by hitting `]`, and then run the following command:
+To install LinA, first enter Pkg mode by hitting `]`, and then run the following command:
 
 ```julia-repl
 pkg> add https://github.com/LICO-labs/LinA.jl
@@ -16,7 +16,7 @@ pkg> add https://github.com/LICO-labs/LinA.jl
 
 All the useful documentation should be accessible through the `?` native Julia command to access documentation. (ex. do ?Linearize() to access the documentation of that function)
 ### Basic use
-To Linearize $f(x) = x^2$ from -10 to 10 with a maximum absolute error of $2$ simply do
+To linearize $f(x) = x^2$ from -10 to 10 with a maximum absolute error of $2$ simply do
 ```julia
 julia> using LinA
 
