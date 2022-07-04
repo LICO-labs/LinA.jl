@@ -3,11 +3,19 @@ LinA is a piecewise linear approximation package which approximates univariate d
 Both absolute and relative errors are implemented. It is also possible to add custom error type. LinA work expression as well as with native Julia functions and
 Details of the algorithms can be found in [this paper.](https://hal.archives-ouvertes.fr/hal-03336003)
 
+## Installation
 
-# Usage of the LinA package
+To install LinA, first, enter Pkg mode by hitting `]`, and then run the following command:
+
+```julia-repl
+pkg> add https://github.com/LICO-labs/LinA.jl
+```
+
+
+## Usage of the LinA package
 
 All the useful documentation should be accessible through the `?` native Julia command to access documentation. (ex. do ?Linearize() to access the documentation of that function)
-## Basic use
+### Basic use
 To Linearize $f(x) = x^2$ from -10 to 10 with a maximum absolute error of $2$ simply do
 ```julia
 julia> using LinA
@@ -37,7 +45,7 @@ julia> pwl[2]
 julia> pwl[2].xMax
 -2.0
 ```
-## Plotting
+### Plotting
 Pwl functions are compatible with Plots.jl. To plot a pwl function simply do
 ```julia
 using Plots
@@ -49,4 +57,4 @@ plot(x->pwl(x),-10,10)
 
 ## Citing
 
-If you have used our librarie and wish to cite our work (which we greatly encourage) use the referrence of [our paper.](https://hal.archives-ouvertes.fr/hal-03336003) Starring the _LinA.jl_ repository on GitHub is also appreciated.
+If you have used our library and wish to cite our work (which we greatly encourage) use the referrence of [our paper.](https://hal.archives-ouvertes.fr/hal-03336003) Starring the _LinA.jl_ repository on GitHub is also appreciated.
