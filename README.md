@@ -1,5 +1,5 @@
 # LinA.jl
-LinA is a piecewise linear approximation package which approximates univariate diffentiable functions with an optimal (in term of number of segments) piecewise linear function given an error metric.
+LinA is a piecewise linear approximation package which approximates (or over/under-estimates) univariate diffentiable functions with an optimal (in term of number of segments) piecewise linear function given an error metric.
 Both absolute and relative errors are implemented. It is also possible to add custom error types. LinA works with expressions as well as with native Julia functions.
 Details of the algorithms can be found in [this paper.](https://hal.archives-ouvertes.fr/hal-03336003)
 
