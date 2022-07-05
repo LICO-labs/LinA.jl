@@ -16,6 +16,10 @@ Makes an optimal piecewise Linear approximation of expr_fct from x1 to x2. The r
 - `bounding` : `Under()` for an underestimation, `Over()` for an overestimation, `Best()` for estimation that can go under or over the function. By default, it uses `Best()`
 - `ConcavityChanges` : Concavity changes in the function. If not given, they will be computed automatically which, in rare cases, can lead to precision errors if the concavity is asymptotic to zero. 
 
+!!! note
+    It is also possible to specify which algorithm to use between `HeuristicLin()` and `ExactLin()` by simply adding it after the error type.
+    By default LinA uses the heuristic.
+
 # Example
 ```julia-repl
 julia> pwl = Linearize(:(x^2),0,2,Absolute(0.1))
