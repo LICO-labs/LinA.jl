@@ -16,7 +16,7 @@ pkg> add https://github.com/LICO-labs/LinA.jl
 
 ## Usage of the LinA package
 
-All the useful documentation should be accessible through the `?` native Julia command to access documentation. (ex. do ?Linearize() to access the documentation of that function)
+For the full documentation, see the [documentation webpage.](https://lico-labs.github.io/LinA.jl/) 
 ### Basic use
 To linearize $f(x) = x^2$ from -10 to 10 with a maximum absolute error of $2$ simply do
 ```julia
