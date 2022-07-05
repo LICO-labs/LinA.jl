@@ -59,4 +59,4 @@ plot(x->pwl(x),-10,10)
 
 ## Citing
 
-If you have used our library and wish to cite our work (which we greatly encourage) use the referrence of [our paper.](https://hal.archives-ouvertes.fr/hal-03336003) Starring the _LinA.jl_ repository on GitHub is also appreciated.
+If you have used our library and wish to cite our work (which we greatly encourage) use the reference of [our paper.](https://hal.archives-ouvertes.fr/hal-03336003) Starring the _LinA.jl_ repository on GitHub is also appreciated.
