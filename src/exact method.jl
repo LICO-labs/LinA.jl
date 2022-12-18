@@ -1,5 +1,4 @@
 
-include("exactPiece.jl")
 
 function exactLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = Best() ::BoundingType, 
                     ConcavityChanges = [Inf]::Array{Float64,1} )

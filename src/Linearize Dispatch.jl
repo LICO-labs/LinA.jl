@@ -1,5 +1,4 @@
-include("Heuristic.jl")
-include("exact method.jl")
+
 
 #This file is used to dispatch Linearize() on an optional argument (e::ErrorType)
 
@@ -8,7 +7,7 @@ include("exact method.jl")
 
 Makes an optimal piecewise Linear approximation of expr_fct from x1 to x2. The result will be an array of `LinearPiece`. Note that the array is directly callable as a function.
 # Arguments
-- `expr_fct` : R --> R function to linearize (either an expression or a native julia function)
+- `expr_fct` : function to linearize from R to R (either an expression or a native julia function)
 - `x1` : from
 - `x2` : to
 - `e` : error type either Absolute() or Relative()

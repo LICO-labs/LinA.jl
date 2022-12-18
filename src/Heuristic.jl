@@ -1,6 +1,4 @@
-include("convexConcaveSplit.jl")
-include("CorridorFromInfo.jl")
-include("ConvexCorridor.jl")
+
 
 
 

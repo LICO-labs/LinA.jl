@@ -1,6 +1,5 @@
 
-include("Linearize Dispatch.jl")
-include("exact method.jl")
+
 
 function LinearBounding(expr_fct::Ef,x1::Real,x2::Real, e::Absolute;
     ConcavityChanges = [Inf]::Array{Float64,1} )
