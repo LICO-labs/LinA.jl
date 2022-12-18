@@ -9,7 +9,7 @@ function exactLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = Best(
    
     
     if ConcavityChanges == [Inf]
-        ConcavityChanges = decoupageConcavite(x1,x2,expr_fct)
+        ConcavityChanges = concavitySplit(x1,x2,expr_fct)
     end
     ConcavityChanges = [x1;ConcavityChanges;x2] 
     ConcavityChanges = sort(unique(ConcavityChanges)) # make sure that the bounds are there

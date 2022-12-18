@@ -1,13 +1,13 @@
 
 
 
-seconde_derive(fct::Ef) = derive(derive(fct))
 
 
 
- function decoupageConcavite(x1::Real,x2::Real,expr_fnc::Ef)
 
-    d2_f = seconde_derive(expr_fnc)
+ function concavitySplit(x1::Real,x2::Real,expr_fnc::Ef)
+
+    d2_f = derive(derive(expr_fnc))
     #special case for constant second derivative
     typeof(d2_f) <: Number && return Float64[]
 
@@ -22,6 +22,8 @@ seconde_derive(fct::Ef) = derive(derive(fct))
         if isa(y, InexactError)
             @warn "No concavity changes were found in the interval.\n It might be because of precision issues since the second derivative is almost constant"
             return Float64[]
+        else
+            rethrow()
         end
     end
 end
