@@ -60,6 +60,12 @@ struct Absolute <: ErrorType
     delta::Real
 end
 
+"""
+Relative error from the function (in percentage)
+
+    !!! note
+    For a relative error to be well defined, the function needs to have no zeros!
+"""
 struct Relative <: ErrorType
     percent::Real
 end
