@@ -7,10 +7,10 @@ using Calculus, ForwardDiff
 const Ef=Union{Expr, Function}
 
 
-minus(expr::Expr) = Expr(:call, :-, expr)
-minus(f::Function) =  x->-f(x)
+Minus(expr::Expr) = Expr(:call, :-, expr)
+Minus(f::Function) =  x->-f(x)
 
-paraToFncLin(a,b) = x -> a*x + b
+ParaToFncLin(a,b) = x -> a*x + b
 
 
 struct LinearPiece <: Function
@@ -28,9 +28,9 @@ end
 
 
 (l::LinearPiece)(x::Real) = l.fct(x)
--(p::LinearPiece) = LinearPiece(p.xMin,p.xMax,-p.a,-p.b,paraToFncLin(-p.a,-p.b))
-+(p::LinearPiece,x::Real) = LinearPiece(p.xMin,p.xMax,p.a,p.b + x,paraToFncLin(p.a,p.b + x))
--(p::LinearPiece,x::Real) = LinearPiece(p.xMin,p.xMax,p.a,p.b - x,paraToFncLin(p.a,p.b - x))
+-(p::LinearPiece) = LinearPiece(p.xMin,p.xMax,-p.a,-p.b,ParaToFncLin(-p.a,-p.b))
++(p::LinearPiece,x::Real) = LinearPiece(p.xMin,p.xMax,p.a,p.b + x,ParaToFncLin(p.a,p.b + x))
+-(p::LinearPiece,x::Real) = LinearPiece(p.xMin,p.xMax,p.a,p.b - x,ParaToFncLin(p.a,p.b - x))
 
 
 
@@ -92,23 +92,23 @@ struct dataError
     yMax::Real
 end
 
-function fctSample(x, lower, upper) 
+function FctSample(x, lower, upper) 
 
     return dataError(x,lower(x),upper(x))
 end
 
-function randomMidPoint(x::Number,y::Number)
+function RandomMidPoint(x::Number,y::Number)
     r = rand()
     r * x + (1-r) * y
 end
 
 #for polymorphism between symbolic and not symbolic
-fctMaker(e::Expr) = mk_function(:((x -> $e)))
-fctMaker(e::Function) = e
-fctMaker(x::Number) = y->x
-derive(x::Number) = 0
-derive(expr::Expr) = Calculus.simplify(differentiate(expr, :x))
-derive(f::Function) = z->ForwardDiff.gradient(x->f(x[1]),[z])[1]
+FctMaker(e::Expr) = mk_function(:((x -> $e)))
+FctMaker(e::Function) = e
+FctMaker(x::Number) = y->x
+Derive(x::Number) = 0
+Derive(expr::Expr) = Calculus.simplify(differentiate(expr, :x))
+Derive(f::Function) = z->ForwardDiff.gradient(x->f(x[1]),[z])[1]
 #ForwardDiff.derivative(f, x::Real)
 
 ;

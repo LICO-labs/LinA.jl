@@ -1,7 +1,7 @@
 using LinA
 using Test
 
-function testErrorAbsolute(f,pwl,delta)
+function TestErrorAbsolute(f,pwl,delta)
 
     from = pwl[1].xMin
     to = pwl[end].xMax
@@ -13,7 +13,7 @@ function testErrorAbsolute(f,pwl,delta)
 
 end
 
-function testErrorRelative(f,pwl,eps)
+function TestErrorRelative(f,pwl,eps)
 
     from = pwl[1].xMin
     to = pwl[end].xMax
@@ -30,19 +30,19 @@ end
 
     pwl = Linearize(:(x^2),-10,10,Absolute(2))
     @test length(pwl) == 5
-    @test testErrorAbsolute(x->x^2,pwl,2)
+    @test TestErrorAbsolute(x->x^2,pwl,2)
 
     pwl = Linearize(:(-x^2),-10,10,Absolute(2))
     @test length(pwl) == 5
-    @test testErrorAbsolute(x->-x^2,pwl,2)
+    @test TestErrorAbsolute(x->-x^2,pwl,2)
 
     pwl = Linearize(:(x^3),-10,10,Absolute(2))
     @test length(pwl) == 20
-    @test  testErrorAbsolute(x->x^3,pwl,2)
+    @test  TestErrorAbsolute(x->x^3,pwl,2)
 
     pwl = Linearize(x->x^3,-10,10,Absolute(2))
     @test length(pwl) == 20
-    @test  testErrorAbsolute(x->x^3,pwl,2)
+    @test  TestErrorAbsolute(x->x^3,pwl,2)
 
 end
 
@@ -50,19 +50,19 @@ end
 
     pwl = Linearize(:(x^2+1),-10,10,Relative(1))
     @test length(pwl) == 22
-    @test testErrorRelative(x->x^2+1,pwl,1)
+    @test TestErrorRelative(x->x^2+1,pwl,1)
 
     pwl = Linearize(:(-x^2-1),-10,10,Relative(1))
     @test length(pwl) == 22
-    @test testErrorRelative(x->-x^2-1,pwl,1)
+    @test TestErrorRelative(x->-x^2-1,pwl,1)
 
     pwl = Linearize(:(x^3+20),-2,2,Relative(1))
     @test length(pwl) == 6
-    @test  testErrorRelative(x->x^3+20,pwl,1)
+    @test  TestErrorRelative(x->x^3+20,pwl,1)
 
     pwl = Linearize(x->x^3+20,-2,2,Relative(1))
     @test length(pwl) == 6
-    @test  testErrorRelative(x->x^3+20,pwl,1)
+    @test  TestErrorRelative(x->x^3+20,pwl,1)
 
 end
 
@@ -74,19 +74,19 @@ end
 
     pwl = Linearize(:(x^2),-10,10,Absolute(2),ExactLin())
     @test length(pwl) == 5
-    @test testErrorAbsolute(x->x^2,pwl,2)
+    @test TestErrorAbsolute(x->x^2,pwl,2)
 
     pwl = Linearize(:(-x^2),-10,10,Absolute(2),ExactLin())
     @test length(pwl) == 5
-    @test testErrorAbsolute(x->-x^2,pwl,2)
+    @test TestErrorAbsolute(x->-x^2,pwl,2)
 
     pwl = Linearize(:(x^3),-10,10,Absolute(2),ExactLin())
     @test length(pwl) == 19
-    @test  testErrorAbsolute(x->x^3,pwl,2)
+    @test  TestErrorAbsolute(x->x^3,pwl,2)
 
     pwl = Linearize(x->x^3,-10,10,Absolute(2),ExactLin())
     @test length(pwl) == 19
-    @test  testErrorAbsolute(x->x^3,pwl,2)
+    @test  TestErrorAbsolute(x->x^3,pwl,2)
 
 
 end
@@ -97,19 +97,19 @@ end
 
     pwl = Linearize(:(x^2+1),-10,10,Relative(1),ExactLin())
     @test length(pwl) == 22
-    @test testErrorRelative(x->x^2+1,pwl,1)
+    @test TestErrorRelative(x->x^2+1,pwl,1)
 
     pwl = Linearize(:(-x^2-1),-10,10,Relative(1),ExactLin())
     @test length(pwl) == 22
-    @test testErrorRelative(x->-x^2-1,pwl,1)
+    @test TestErrorRelative(x->-x^2-1,pwl,1)
 
     pwl = Linearize(:(x^3+20),-2,2,Relative(1),ExactLin())
     @test length(pwl) == 5
-    @test  testErrorRelative(x->x^3+20,pwl,1)
+    @test  TestErrorRelative(x->x^3+20,pwl,1)
 
     pwl = Linearize(x->x^3+20,-2,2,Relative(1),ExactLin())
     @test length(pwl) == 5
-    @test  testErrorRelative(x->x^3+20,pwl,1)
+    @test  TestErrorRelative(x->x^3+20,pwl,1)
 
 end
 

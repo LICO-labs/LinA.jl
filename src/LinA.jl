@@ -11,22 +11,21 @@ export Absolute, Relative, Best, Under, Over, HeuristicLin, ExactLin
 export isContinuous, CplexBreakpoints
 
 include("strucDef.jl")
-include("Utilities.jl")
+include("utilities.jl")
 include("convexConcaveSplit.jl")
-include("CorridorFromInfo.jl")
+include("corridorFromInfo.jl")
 
 
-include("ConvexCorridor.jl")
-include("Heuristic.jl")
+include("convexCorridor.jl")
+include("heuristic.jl")
 
-include("ORourke.jl")
+include("oRourke.jl")
 include("exactPiece.jl")
 
-include("exact method.jl")
+include("exactMethod.jl")
 
-include("Linearize Dispatch.jl")
-include("Bounding.jl")
-#include("ORourke.jl")
-#include("exact method.jl")
+include("linearizeDispatch.jl")
+include("bounding.jl")
+
 
 end # module

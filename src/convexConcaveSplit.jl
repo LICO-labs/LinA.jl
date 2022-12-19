@@ -5,13 +5,13 @@
 
 
 
- function concavitySplit(x1::Real,x2::Real,expr_fnc::Ef)
+ function ConcavitySplit(x1::Real,x2::Real,expr_fnc::Ef)
 
-    d2_f = derive(derive(expr_fnc))
+    d2_f = Derive(Derive(expr_fnc))
     #special case for constant second derivative
     typeof(d2_f) <: Number && return Float64[]
 
-    temp =  fctMaker(d2_f)
+    temp =  FctMaker(d2_f)
     f(x) = temp(x)
 
     try

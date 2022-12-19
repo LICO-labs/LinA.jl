@@ -2,7 +2,7 @@
 using Polyhedra, CDDLib
 
 
-function pointPlane(p::dataError)
+function PointPlane(p::dataError)
     # a and b are the variables to optimize
     # -x*a - b < - ymin
     # x*a + b < ymax
@@ -12,14 +12,14 @@ end
 function ORourke(pts)
     pts = copy(pts)
     
-    poly = pointPlane(pts[1])
+    poly = PointPlane(pts[1])
     temp = poly;
     coveredPts = [popfirst!(pts)];
     
    #add points until no line is feasible or all pts are covered
     while !isempty(pts) && !isempty(polyhedron(poly, CDDLib.Library(:exact))) 
         temp = copy(poly);
-        poly = poly ∩ pointPlane(pts[1])
+        poly = poly ∩ PointPlane(pts[1])
         push!(coveredPts,popfirst!(pts)) 
 
     end

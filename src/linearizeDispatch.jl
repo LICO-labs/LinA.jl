@@ -56,5 +56,5 @@ function Linearize(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType,algorithm::Exact
 
     (isfinite(x1) && isfinite(x2)) || throw(ArgumentError("Must be called on a finite interval"))
 
-    return exactLin(expr_fct,x1,x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges)
+    return ExactLin(expr_fct,x1,x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges)
 end

@@ -12,7 +12,7 @@ function HeuristicLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = B
 
    
     if ConcavityChanges == [Inf]
-        ConcavityChanges = concavitySplit(x1,x2,expr_fct)
+        ConcavityChanges = ConcavitySplit(x1,x2,expr_fct)
     end
     
 
@@ -22,7 +22,7 @@ function HeuristicLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = B
 
 
     pwl = Array{LinearPiece}(undef, 0)
-    temp =  fctMaker(expr_fct)
+    temp =  FctMaker(expr_fct)
     f(x) = temp(x)
     
 
@@ -39,12 +39,12 @@ function HeuristicLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = B
         inverted = false
         
         if  ForwardDiff.hessian(x->f(x[1]),[(x1+x2)/2])[1] < 0
-            expr = minus(expr)
+            expr = Minus(expr)
             inverted = true
             bounds = -bounds
         end
 
-        corridor = corridorFromInfo(x1,x2,expr,e,bounds)
+        corridor = CorridorFromInfo(x1,x2,expr,e,bounds)
         tempCorridor = LinearizeConvex(corridor...)
         
         
