@@ -61,8 +61,9 @@ end
 """
 Relative error from the function (in percentage)
 
-    !!! note
+    !!! warning
     For a relative error to be well defined, the function needs to have no zeros!
+
 """
 struct Relative <: ErrorType
     percent::Real
