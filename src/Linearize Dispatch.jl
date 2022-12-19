@@ -39,17 +39,22 @@ julia> pwl(1)
 function Linearize(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = Best() ::BoundingType,
 ConcavityChanges = [Inf]::Array{Float64,1})
 
+    (isfinite(x1) && isfinite(x2)) || throw(ArgumentError("Must be called on a finite interval"))
+
     return HeuristicLin(expr_fct,x1,x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges)
 end
 
 function Linearize(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType,algorithm::HeuristicLin; bounding = Best() ::BoundingType,
     ConcavityChanges = [Inf]::Array{Float64,1})
 
-        return HeuristicLin(expr_fct,x1,x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges)
+    (isfinite(x1) && isfinite(x2)) || throw(ArgumentError("Must be called on a finite interval"))
+    return HeuristicLin(expr_fct,x1,x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges)
 end
 
 function Linearize(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType,algorithm::ExactLin; bounding = Best() ::BoundingType,
     ConcavityChanges = [Inf]::Array{Float64,1})
 
-        return exactLin(expr_fct,x1,x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges)
+    (isfinite(x1) && isfinite(x2)) || throw(ArgumentError("Must be called on a finite interval"))
+
+    return exactLin(expr_fct,x1,x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges)
 end

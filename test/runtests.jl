@@ -142,5 +142,5 @@ end
     pwl = Linearize(:(x^2),-10,10,Absolute(1))
     @test_throws DomainError pwl(30)
 
-
+    @test_throws ArgumentError Linearize(:(sin(x)^2),-Inf,2,Absolute(0.05))
 end
