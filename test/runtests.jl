@@ -34,7 +34,7 @@ end
 
     pwl = Linearize(:(-x^2),-10,10,Absolute(2))
     @test length(pwl) == 5
-    @test testErrorAbsolute(-x->x^2,pwl,2)
+    @test testErrorAbsolute(x->-x^2,pwl,2)
 
     pwl = Linearize(:(x^3),-10,10,Absolute(2))
     @test length(pwl) == 20

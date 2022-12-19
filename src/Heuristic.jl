@@ -37,8 +37,9 @@ function HeuristicLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = B
 
         # if the function is concave, multiply by *-1 and switch under by over
         inverted = false
-        if f''((x1+x2)/2) <0
-            expr = -expr
+        
+        if  ForwardDiff.hessian(x->f(x[1]),[(x1+x2)/2])[1] < 0
+            expr = minus(expr)
             inverted = true
             bounds = -bounds
         end

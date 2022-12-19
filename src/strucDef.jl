@@ -6,12 +6,10 @@ using Calculus, ForwardDiff
 
 const Ef=Union{Expr, Function}
 
-#to use the ' notattion for derivative (which was standard notation in Calculus.jl)
-adjoint(f::Function) = derivative(f)
 
--(expr::Expr) = Expr(:call, :-, expr)
--(f::Function) = x->-f(x)
-#-(expr::Expr) = :(($expr) * -1)
+minus(expr::Expr) = Expr(:call, :-, expr)
+minus(f::Function) =  x->-f(x)
+
 paraToFncLin(a,b) = x -> a*x + b
 
 
@@ -111,5 +109,6 @@ fctMaker(x::Number) = y->x
 derive(x::Number) = 0
 derive(expr::Expr) = Calculus.simplify(differentiate(expr, :x))
 derive(f::Function) = z->ForwardDiff.gradient(x->f(x[1]),[z])[1]
+#ForwardDiff.derivative(f, x::Real)
 
 ;
