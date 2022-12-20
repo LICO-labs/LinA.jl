@@ -19,7 +19,7 @@
         return find_zeros(f,x1,x2)
     catch y
         #if the second derivative is almost zero on an interval
-        if isa(y, InexactError)
+        if isa(y, InexactError) || isa(y,ArgumentError)
             @warn "No concavity changes were found in the interval.\n It might be because of precision issues since the second derivative is almost constant"
             return Float64[]
         else
