@@ -18,7 +18,7 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
     #numerical precision 
     epsilon = 1e-5 
     line = LinearPiece(0,0,0,0,x->0)
-    pts = collect(range(start,maximum,length=40))
+    pts = collect(range(start,maximum,length=50))
     data = FctSample.(pts, lower,upper)
     
     succes=false;
