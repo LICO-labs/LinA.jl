@@ -8,7 +8,7 @@ using GeneralizedGenerated
 
 export Linearize , LinearBounding
 export Absolute, Relative, Best, Under, Over, HeuristicLin, ExactLin
-export isContinuous, CplexBreakpoints
+export isContinuous, breakpoints
 
 include("strucDef.jl")
 include("utilities.jl")
