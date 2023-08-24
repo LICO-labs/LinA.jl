@@ -16,7 +16,7 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
     #TODO: If intersections are epsilon close skip intersections
     
     #numerical precision 
-    epsilon = 1e-5 
+    epsilon = 1e-4
     line = LinearPiece(0,0,0,0,x->0)
     pts = collect(range(start,maximum,length=50))
     data = FctSample.(pts, lower,upper)
@@ -56,36 +56,38 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
             crossing = false
             
             for i in 1: length(topIntersec) -1
-                
-                #other criteria if differentiable
-                #if topDistance'(topIntersec[i]) < 0
-                if topDistance((topIntersec[i]+topIntersec[i+1])/2) <- epsilon
-                    
-                    push!(pts,topIntersec[i])
-                    push!(pts,(topIntersec[i]+topIntersec[i+1])/2)
-                    push!(pts,topIntersec[i+1])
-                    
-                    #previously any precision of 1e-5 or below very rarely caused an infinite loop here because of the conversion 
-                    #Rational{BigInt} <->  float64 used in ORourke ( method CDDLib.Library(:exact)) which is why randomization was used
-                    push!(pts,RandomMidPoint(topIntersec[i], topIntersec[i+1]))
-                    
-                    crossing = true;
+                dp = topIntersec[i + 1] - topIntersec[i]
+                midpoints = collect(topIntersec[i] : dp / 10 : topIntersec[i + 1])
+                topdpoints = [(topDistance(p), p) for p in midpoints]
+                sort!(topdpoints; rev = true)
+                n = ceil(Int64, length(topdpoints) / 5)
+                topdpoints = topdpoints[1 : n]
+                for (topd, p) in topdpoints
+                    #other criteria if differentiable
+                    #if topDistance'(topIntersec[i]) < 0
+                    if topd < - epsilon
+                        println("adding point $p with violation of $topd)")
+                        push!(pts,p)
+                        crossing = true;
+                    end
                 end
-                
             end
             
             for i in 1: length(lowIntersec) -1
-                #other criteria if differentiable
-                #if lowerDistance'(lowIntersec[i]) < 0
-                if lowerDistance((lowIntersec[i] + lowIntersec[i+1])/2) < - epsilon
-                    
-                    
-                    push!(pts,lowIntersec[i])
-                    push!(pts,(lowIntersec[i] + lowIntersec[i+1])/2)
-                    push!(pts,lowIntersec[i+1])
-                
+                dp = lowIntersec[i + 1] - lowIntersec[i]
+                midpoints = collect(lowIntersec[i] : dp / 10 : lowIntersec[i + 1])
+                lowdpoints = [(lowerDistance(p), p) for p in midpoints]
+                sort!(lowdpoints; rev = true)
+                n = ceil(Int64, length(lowdpoints) / 5)
+                lowdpoints = lowdpoints[1 : n]
+                for (lowd, p) in lowdpoints
+                    #other criteria if differentiable
+                    #if lowerDistance'(lowIntersec[i]) < 0
+                    if lowd < - epsilon
+                        push!(pts,p)
+                        crossing = true
+                    end
                 end
-                
             end
             
             
