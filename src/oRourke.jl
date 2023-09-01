@@ -17,7 +17,7 @@ function ORourke(pts)
     coveredPts = [popfirst!(pts)];
     
    #add points until no line is feasible or all pts are covered
-    while !isempty(pts) && !isempty(polyhedron(poly, CDDLib.Library(:exact))) 
+    while !isempty(pts) && !isempty(points(doubledescription(poly)))#!isempty(polyhedron(poly, CDDLib.Library(:exact))) 
         temp = copy(poly);
         poly = poly ∩ PointPlane(pts[1])
         push!(coveredPts,popfirst!(pts)) 
@@ -25,15 +25,16 @@ function ORourke(pts)
     end
    
     
+    verticesPoly = collect(points(doubledescription(poly)))
     
-    if isempty(polyhedron(poly, CDDLib.Library(:exact)))
+    if isempty(verticesPoly)#isempty(polyhedron(poly, CDDLib.Library(:exact)))
         pop!(coveredPts)
         poly = temp
+        verticesPoly = collect(points(doubledescription(poly)))
     end
 
-    
     #We take any arbitrary point in the polyhedra (here the "center")
-    verticesPoly = collect(points(doubledescription(poly)))
+    @assert(!isempty(verticesPoly), "polyhedron is $(show(IOContext(stdout, :limit => false), "text/plain", poly))")
     lineCoef = sum(verticesPoly)/length(verticesPoly)
 
     line =  LinearPiece(coveredPts[1].x,coveredPts[end].x,lineCoef[1],lineCoef[2],x-> lineCoef[1]*x + lineCoef[2])
