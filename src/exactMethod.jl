@@ -6,13 +6,31 @@ function ExactLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = Best(
         return Float64[]
     end
    
-    
+    pwl = Array{LinearPiece}(undef, 0)
+
+    if false
+        f1 = expr_fct(x1)
+        f2 = expr_fct(x2)
+        if max(abs(x1), abs(f1)) < 1e-7
+            xt = x2
+            ft = expr_fct(xt)
+            while abs(ft) > 1e-2 * abs(f2)
+                xt = (x1 + xt) / 2
+                ft = expr_fct(xt)
+            end
+            lp = LinearPiece(x1, xt, 0, 0, x -> 0.0)
+            println("first piece approximated to zero in interval [$x1, $xt]")
+            push!(pwl, lp)
+            x1 = xt
+            # return vcat(lp, ExactLin(expr_fct, xt, x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges))
+        end
+    end
+
     if ConcavityChanges == [Inf]
         ConcavityChanges = ConcavitySplit(x1,x2,expr_fct)
     end
     ConcavityChanges = [x1;ConcavityChanges;x2] 
     ConcavityChanges = sort(unique(ConcavityChanges)) # make sure that the bounds are there
-    pwl = Array{LinearPiece}(undef, 0)
     cor = CorridorFromInfo(x1, x2,expr_fct, e, bounding)[3:end-1]
     
     x2Temp = -1

@@ -13,7 +13,7 @@ Makes an optimal piecewise Linear approximation from x1 to x2 of a convex corrid
 function LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
 
     
-    tol = 0.000001 
+    tol = 1e-6
     slope = 0.0;
     b = 0.0;
     pwl = Array{LinearPiece}(undef, 0)
@@ -27,7 +27,7 @@ function LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
 
     while x2 - x1 > tol
 
-        println("entering loop with x1 = $x1, x2 = $x2, f(x1) = $(f(x1)), f(x2) = $(f(x2))")
+        # println("entering loop with x1 = $x1, x2 = $x2, f(x1) = $(f(x1)), f(x2) = $(f(x2))")
         # if f(x2) < 0.0 && f(x1) * f(x2) > 0.0 break end
         #find the tangence point if possible
         if f(x2) >= 0.0

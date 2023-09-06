@@ -62,3 +62,18 @@ function breakpoints(pwl, ε = 1e-5)
     
 end
 
+function get_scale(f::Ef, x1::Real, x2::Real)::Float64
+    return max(abs(f(x1)), abs(f(x2)))
+end
+
+function scale_function(f::Ef, s::Real)::Ef
+    if f isa Expr
+        return :( eval(f) * s )
+    elseif f isa Function
+        return x -> s * f(x)
+    end
+end
+
+function scale_linearpiece(lp::LinearPiece, s::Real)::LinearPiece
+    return LinearPiece(lp.xMin, lp.xMax, s * lp.a, s * lp.b, x -> s * (lp.a * x + lp.b))
+end

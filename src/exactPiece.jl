@@ -16,7 +16,7 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
     #TODO: If intersections are epsilon close skip intersections
     
     #numerical precision 
-    epsilon = 1e-7
+    epsilon = 1e-5
     line = LinearPiece(0,0,0,0,x->0)
     pts = collect(range(start,maximum,length=50))
     data = FctSample.(pts, lower,upper)
@@ -69,7 +69,7 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
                     #other criteria if differentiable
                     #if topDistance'(topIntersec[i]) < 0
                     if topd < - epsilon
-                        println("adding point $p with violation of $topd)")
+                        # println("adding point $p with violation of $topd)")
                         push!(pts,p)
                         crossing = true;
                     end
