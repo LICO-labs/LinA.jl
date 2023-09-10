@@ -77,3 +77,12 @@ end
 function scale_linearpiece(lp::LinearPiece, s::Real)::LinearPiece
     return LinearPiece(lp.xMin, lp.xMax, s * lp.a, s * lp.b, x -> s * (lp.a * x + lp.b))
 end
+
+function find_zeros(f::Ef, x1::Real, x2::Real)::Vector{Real}
+    zs = roots(f, interval(x1, x2))
+    return [(z.interval.hi + z.interval.lo) / 2 for z in zs]
+end
+
+function find_zero(f::Ef, x1::Real, x2::Real)::Real
+    return find_zeros(f, x1, x2)[begin]
+end

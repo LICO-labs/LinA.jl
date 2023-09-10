@@ -1,9 +1,9 @@
  module LinA
 
-using Roots
+# using Roots
 using Calculus
 using GeneralizedGenerated
-
+using IntervalArithmetic, IntervalRootFinding
 
 
 export Linearize , LinearBounding

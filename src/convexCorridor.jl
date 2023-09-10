@@ -13,7 +13,7 @@ Makes an optimal piecewise Linear approximation from x1 to x2 of a convex corrid
 function LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
 
     
-    tol = 1e-6
+    tol = 1e-7
     slope = 0.0;
     b = 0.0;
     pwl = Array{LinearPiece}(undef, 0)
@@ -43,13 +43,15 @@ function LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
         # elseif abs(f(x2)) < tol a = x2
         # else a = find_zero(f,(x1,x2), Bisection())
         # end
-        a = find_zero(f,(x1,x2), Bisection(), atol = tol/ 100)
+        # a = find_zero(f,(x1,x2), Bisection(), atol = tol/ 100)
+        a = find_zero(f, x1, x2)
         slope = du(a)
         b = lower(x1) - slope * x1
 
         #find the second end of the segment
         if Δ(x2) <= 0.0
-           nextX1 = find_zero(Δ,(a,x2),Bisection(), atol = tol / 100)
+            # nextX1 = find_zero(Δ,(a,x2),Bisection(), atol = tol / 100)
+            nextX1 = find_zero(Δ, a, x2)
         else
             nextX1 = x2
         end

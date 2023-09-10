@@ -2,29 +2,13 @@
 
 function ExactLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = Best() ::BoundingType, 
                     ConcavityChanges = [Inf]::Array{Float64,1} )
+
+    # println("running ExactLin")
     if x1 >= x2
         return Float64[]
     end
    
     pwl = Array{LinearPiece}(undef, 0)
-
-    if false
-        f1 = expr_fct(x1)
-        f2 = expr_fct(x2)
-        if max(abs(x1), abs(f1)) < 1e-7
-            xt = x2
-            ft = expr_fct(xt)
-            while abs(ft) > 1e-2 * abs(f2)
-                xt = (x1 + xt) / 2
-                ft = expr_fct(xt)
-            end
-            lp = LinearPiece(x1, xt, 0, 0, x -> 0.0)
-            println("first piece approximated to zero in interval [$x1, $xt]")
-            push!(pwl, lp)
-            x1 = xt
-            # return vcat(lp, ExactLin(expr_fct, xt, x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges))
-        end
-    end
 
     if ConcavityChanges == [Inf]
         ConcavityChanges = ConcavitySplit(x1,x2,expr_fct)

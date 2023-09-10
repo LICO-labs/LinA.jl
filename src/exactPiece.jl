@@ -16,7 +16,7 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
     #TODO: If intersections are epsilon close skip intersections
     
     #numerical precision 
-    epsilon = 1e-5
+    epsilon = 1e-7
     line = LinearPiece(0,0,0,0,x->0)
     pts = collect(range(start,maximum,length=50))
     data = FctSample.(pts, lower,upper)
@@ -120,11 +120,11 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
         uExtend = maximum
         
         try 
-            lExtend = find_zeros(lowerDistanceRel, line.xMax,maximum)[1]
+            lExtend = find_zero(lowerDistanceRel, line.xMax,maximum)
             catch y
         end
         try 
-            uExtend = find_zeros(topDistanceRel, line.xMax,maximum)[1]
+            uExtend = find_zero(topDistanceRel, line.xMax,maximum)
             catch y
         end
         furthest = min(uExtend,lExtend)

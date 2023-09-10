@@ -65,10 +65,5 @@ function ScaledLinearize(f::Ef, x1::Real, x2::Real, e::ErrorType, LinAlg::Union{
     g = scale_function(f, 1/s)
     newe = e isa Absolute ? Absolute(e.delta / s) : e
     lps = LinAlg(g,x1,x2, newe; bounding = bounding, ConcavityChanges = concavity_changes)
-    newlps = LinearPiece[]
-    for lp in lps
-        new_lp = scale_linearpiece(lp, s)
-        push!(newlps, new_lp)
-    end
-    return newlps
+    return [scale_linearpiece(lp, s) for lp in lps]
 end
