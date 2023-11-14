@@ -84,5 +84,6 @@ function find_zeros(f::Ef, x1::Real, x2::Real)::Vector{Real}
 end
 
 function find_zero(f::Ef, x1::Real, x2::Real)::Real
-    return find_zeros(f, x1, x2)[begin]
+    zeros = find_zeros(f, x1, x2)
+    return isempty(zeros) ? NaN : zeros[begin]
 end

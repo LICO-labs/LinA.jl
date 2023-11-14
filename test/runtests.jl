@@ -25,7 +25,12 @@ function TestErrorRelative(f,pwl,eps)
 
 end
 
-
+@testset "Large Errors" begin
+    f(x) = log(1 + (MathConstants.e - 1) * x)
+    pwl = Linearize(f,0,1,Relative(50))
+    return true
+end
+    
 @testset "Heuristic Absolute" begin
 
     pwl = Linearize(:(x^2),-10,10,Absolute(2))

@@ -36,15 +36,26 @@ end
 
 #evaluate a pieceWise linear function
 
-function (pwl::Array{LinearPiece, 1})(x::Real)
+function (pwl::Array{LinearPiece, 1})(x::Real, tiebreak = Under())
 
-    if x < pwl[1].xMin || x > pwl[end].xMax
+    eps = 1e-7
+
+    if x < pwl[1].xMin - eps || x > pwl[end].xMax + eps
         throw(DomainError(x, "argument must be in the domain of the function"))
     end
 
     starts = getfield.(pwl,:xMin)
-    pieceIndex = searchsortedlast(starts,x)
-    return pwl[pieceIndex](x)
+    ends = getfield.(pwl,:xMax)
+    piece_start = max(1, searchsortedlast(starts, x - eps))
+    piece_end = min(length(pwl), searchsortedfirst(ends, x + eps))
+    if tiebreak isa Under
+        return minimum([pwl[i](x) for i in piece_start:piece_end if x >= pwl[i].xMin - eps && x <= pwl[i].xMax + eps])
+    elseif tiebreak isa Over
+        return maximum([pwl[i](x) for i in piece_start:piece_end if x >= pwl[i].xMin - eps && x <= pwl[i].xMax + eps])
+    else 
+        midpiece = round(Int64, (piece_start + piece_end) / 2) 
+        return pwl[midpiece](x)
+    end
 
 end
 

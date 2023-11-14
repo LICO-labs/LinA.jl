@@ -4,6 +4,7 @@
 using Calculus
 using GeneralizedGenerated
 using IntervalArithmetic, IntervalRootFinding
+using PrecompileTools
 
 
 export Linearize , LinearBounding
@@ -27,5 +28,13 @@ include("exactMethod.jl")
 include("linearizeDispatch.jl")
 include("bounding.jl")
 
-
+@setup_workload begin
+    f = x -> x * (x + 1) * log(x + 2) + 1
+    @compile_workload begin
+        for e in [Relative(1e-1), Absolute(1e-1)], alg in [HeuristicLin, ExactLin], bounding in [Under, Over, Best]
+            pwl = Linearize(f, 0, 1, e, alg(); bounding = bounding())
+            pwl(0.5, bounding)
+        end
+    end
+end
 end # module
