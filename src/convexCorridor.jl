@@ -22,10 +22,10 @@ function LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
     lin(x) = slope * x + b
     #Δ represent the distance between the linear function and the bottom of the corridor
     Δ(x) = lin(x) - lower(x)
-    relΔ(x) = Δ(x) / max(1e-2, x, -x)
+    relΔ(x) = Δ(x) / max(1e-3, x, -x)
     #distance between the linear function and the bottom of the corridor at the start of the coridor if tangeant in "a"
     f(a) = upper(a) + du(a)*(x1-a) - lower(x1)
-    relf(a) = f(a) / max(1e-2, a, -a)
+    relf(a) = f(a) / max(1e-3, a, -a)
 
     # println(stderr, "loop")
     while x2 - x1 > tol
@@ -69,7 +69,7 @@ function LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
 
         x1 = nextX1
     end
-
+    # println("end of loop")
     return pwl
 
 end
