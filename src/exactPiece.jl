@@ -29,8 +29,8 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
     topDistance = x-> upper(x) - line.fct(x)
     lowerDistance = x-> line.fct(x) - lower(x)
     
-    topDistanceRel = x-> topDistance(x) / max(1e-10, abs(upper(x)) + abs(line.fct(x)))
-    lowerDistanceRel = x-> lowerDistance(x) / max(1e-10, abs(lower(x)) + abs(line.fct(x)))
+    topDistanceRel = x-> topDistance(x) / max(1e-10, sum(abs.(upper(x)) + abs.(line.fct(x))))
+    lowerDistanceRel = x-> lowerDistance(x) / max(1e-10, sum(abs.(lower(x)) + abs.(line.fct(x))))
 
     while !succes
         
@@ -44,13 +44,13 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
 
             #try catch to handle rare cases with function asymptotic to zero
             try
-                topIntersec = find_zeros(topDistanceRel,line.xMin,line.xMax)
+                topIntersec = find_zeros(topDistance,line.xMin,line.xMax)
             catch
                 topIntersec = []
             end
             
             try
-                lowIntersec = find_zeros(lowerDistanceRel,line.xMin,line.xMax)
+                lowIntersec = find_zeros(lowerDistance,line.xMin,line.xMax)
             catch
                 lowIntersec = []
             end
@@ -61,7 +61,7 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
             for i in 1: length(topIntersec) -1
                 dp = topIntersec[i + 1] - topIntersec[i]
                 midpoints = collect(topIntersec[i] : dp / 10 : topIntersec[i + 1])
-                topdpoints = [(topDistanceRel(p), p) for p in midpoints]
+                topdpoints = [(topDistance(p), p) for p in midpoints]
                 sort!(topdpoints)
                 # n = ceil(Int64, length(topdpoints) / 5)
                 # topdpoints = topdpoints[1 : n]
@@ -79,7 +79,7 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
             for i in 1: length(lowIntersec) -1
                 dp = lowIntersec[i + 1] - lowIntersec[i]
                 midpoints = collect(lowIntersec[i] : dp / 10 : lowIntersec[i + 1])
-                lowdpoints = [(lowerDistanceRel(p), p) for p in midpoints]
+                lowdpoints = [(lowerDistance(p), p) for p in midpoints]
                 sort!(lowdpoints)
                 # n = ceil(Int64, length(lowdpoints) / 5)
                 # lowdpoints = lowdpoints[1 : n]
@@ -120,11 +120,11 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
         uExtend = maximum
         
         try 
-            lExtend = find_zero(lowerDistanceRel, line.xMax,maximum)
+            lExtend = find_zero(lowerDistance, line.xMax,maximum)
             catch y
         end
         try 
-            uExtend = find_zero(topDistanceRel, line.xMax,maximum)
+            uExtend = find_zero(topDistance, line.xMax,maximum)
             catch y
         end
         furthest = min(uExtend,lExtend)
