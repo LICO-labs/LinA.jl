@@ -29,8 +29,8 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
     topDistance = x-> upper(x) - line.fct(x)
     lowerDistance = x-> line.fct(x) - lower(x)
     
-    topDistanceRel = x-> topDistance(x) / max(1e-3, sum(abs.(upper(x)) + abs.(line.fct(x))))
-    lowerDistanceRel = x-> lowerDistance(x) / max(1e-3, sum(abs.(lower(x)) + abs.(line.fct(x))))
+    topDistanceRel = x-> topDistance(x) / max(1e-3, (abs(upper(x)) + abs(line.fct(x))))
+    lowerDistanceRel = x-> lowerDistance(x) / max(1e-3, (abs(lower(x)) + abs(line.fct(x))))
 
     while !succes
         
