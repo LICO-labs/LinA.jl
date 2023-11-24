@@ -5,6 +5,7 @@ using Calculus
 using GeneralizedGenerated
 using IntervalArithmetic, IntervalRootFinding
 using PrecompileTools
+using Optim
 
 
 export Linearize , LinearBounding
