@@ -41,13 +41,13 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
     
             #try catch to handle rare cases with function asymptotic to zero
             try
-                topIntersec = find_zeros(topDistanceRel,line.xMin,line.xMax)
+                topIntersec = find_zeros(topDistance,line.xMin,line.xMax)
             catch
                 topIntersec = []
             end
             
             try
-                lowIntersec = find_zeros(lowerDistanceRel,line.xMin,line.xMax)
+                lowIntersec = find_zeros(lowerDistance,line.xMin,line.xMax)
             catch
                 lowIntersec = []
             end
