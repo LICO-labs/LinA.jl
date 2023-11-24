@@ -8,7 +8,7 @@ Determine whether a pwl function is continuous up to a numerical precision of ε
 - `ε` : numerical precision used to detect if the end endpoints of two segments are equal (to detect discontinuities)
 
 """
-function isContinuous(pwl, ε = 1e-5) 
+function isContinuous(pwl, ε = EPS) 
 
     
     for i in 1:length(pwl)-1
@@ -38,7 +38,7 @@ Outputs the breakpoints needed for several solvers (CPLEX, Gurobi,...) to native
 - `ε` : numerical precision used to detect if the end endpoints of two segments are equal (to detect discontinuities)
 
 """
-function breakpoints(pwl, ε = 1e-5) 
+function breakpoints(pwl, ε = EPS) 
 
     
     bpx = [pwl[1].xMin]

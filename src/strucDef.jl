@@ -38,16 +38,16 @@ end
 
 function (pwl::Array{LinearPiece, 1})(x::Real, tiebreak = Under())
 
-    eps = 1e-7
-
+    eps = EPS
     if x < pwl[1].xMin - eps || x > pwl[end].xMax + eps
         throw(DomainError(x, "argument must be in the domain of the function"))
     end
 
-    starts = getfield.(pwl,:xMin)
-    ends = getfield.(pwl,:xMax)
+    starts = getfield.(pwl, :xMin)
+    ends = getfield.(pwl, :xMax)
     piece_start = max(1, searchsortedlast(starts, x - eps))
     piece_end = min(length(pwl), searchsortedfirst(ends, x + eps))
+    # println("piece_start = $piece_start, piece_end = $piece_end")
     if tiebreak isa Under
         return minimum([pwl[i](x) for i in piece_start:piece_end if x >= pwl[i].xMin - eps && x <= pwl[i].xMax + eps])
     elseif tiebreak isa Over
@@ -123,4 +123,4 @@ Derive(expr::Expr) = Calculus.simplify(differentiate(expr, :x))
 Derive(f::Function) = z->ForwardDiff.gradient(x->f(x[1]),[z])[1]
 #ForwardDiff.derivative(f, x::Real)
 
-;
+const EPS = 1e-9

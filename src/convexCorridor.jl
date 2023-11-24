@@ -13,9 +13,8 @@ Makes an optimal piecewise Linear approximation from x1 to x2 of a convex corrid
 function LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
 
     
-    tol = 1e-7
-    slope = 0.0;
-    b = 0.0;
+    slope = 0.0
+    b = 0.0
     pwl = Array{LinearPiece}(undef, 0)
     
 
@@ -26,7 +25,7 @@ function LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
     f(a) = upper(a) + du(a)*(x1-a) - lower(x1)
     
     # println(stderr, "loop")
-    while x2 - x1 > tol
+    while x2 - x1 > EPS
         # println(stderr, "asdasd")
         # println("entering loop with x1 = $x1, x2 = $x2, f(x1) = $(f(x1)), f(x2) = $(f(x2))")
         # if f(x2) < 0.0 && f(x1) * f(x2) > 0.0 break end
@@ -39,8 +38,11 @@ function LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
         end
 
         a = find_zero(f, x1, x2)
+        if isnan(a) && abs(f(x1)) < abs(f(x2)) a = x1
+        elseif isnan(a) && abs(f(x2)) < abs(f(x1)) a = x2
+        end
         
-        # @assert(!isnan(a), "a is still NAN!, relf(x1) = $(relf(x1)), relf(x2) = $(relf(x2)), f(x1) = $(f(x1)), f(x2) = $(f(x2))")
+        @assert(!isnan(a), "a is still NAN!, f(x1) = $(f(x1)), f(x2) = $(f(x2))")
 
         slope = du(a)
         b = lower(x1) - slope * x1

@@ -47,7 +47,7 @@ Upper(x1::Real,x2::Real,f::Function,df::Function,e::Absolute,::Over) = x::Real -
 
 
 #Relative error case
-function Lower(x1::Real,x2::Real,f::Function,e::Relative,::Under;ε = 1e-7)
+function Lower(x1::Real,x2::Real,f::Function,e::Relative,::Under;ε = EPS)
    # TODO ADD TOLERANCE as a parameter to the user
    # This 10.0^(-5) seems arbitrairy but commes from the litterature 
    # and it helps to gives a sensible definition for a relative corridor that starts at y=0 
@@ -59,7 +59,7 @@ function Lower(x1::Real,x2::Real,f::Function,e::Relative,::Under;ε = 1e-7)
     end
 end
 
-function Upper(x1::Real,x2::Real,f::Function,df::Function,e::Relative,::Over;ε = 1e-7)
+function Upper(x1::Real,x2::Real,f::Function,df::Function,e::Relative,::Over;ε = EPS)
    # TODO ADD TOLERANCE as a parameter to the user
    # This 10.0^(-5) seems arbitrairy but commes from the litterature 
    # and it helps to gives a sensible definition for a relative corridor that starts at y=0 

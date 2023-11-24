@@ -16,7 +16,6 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
     #TODO: If intersections are epsilon close skip intersections
     
     #numerical precision 
-    epsilon = 1e-7
     line = LinearPiece(0,0,0,0,x->0)
     pts = collect(range(start,maximum,length=50))
     data = FctSample.(pts, lower,upper)
@@ -38,16 +37,19 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
             #find if the solution on the discretized problem works on the original problem 
             topDistance = x-> upper(x) - line.fct(x)
             lowerDistance = x-> line.fct(x) - lower(x)
+
+            topDistanceRel = x -> topDistance(x) / max(1e-10, max(abs(upper(x)), abs(line.fct(x))))
+            lowerDistanceRel = x -> lowerDistance(x) / max(1e-10, max(abs(lower(x)), abs(line.fct(x))))
     
             #try catch to handle rare cases with function asymptotic to zero
             try
-                topIntersec = find_zeros(topDistance,line.xMin,line.xMax)
+                topIntersec = find_zeros(topDistanceRel,line.xMin,line.xMax)
             catch
                 topIntersec = []
             end
             
             try
-                lowIntersec = find_zeros(lowerDistance,line.xMin,line.xMax)
+                lowIntersec = find_zeros(lowerDistanceRel,line.xMin,line.xMax)
             catch
                 lowIntersec = []
             end
@@ -58,10 +60,10 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
             for i in 1: length(topIntersec) -1
                 dp = topIntersec[i + 1] - topIntersec[i]
                 midpoints = collect(topIntersec[i] : dp / 10 : topIntersec[i + 1])
-                topdpoints = [(topDistance(p), p) for p in midpoints]
+                topdpoints = [(topDistanceRel(p), p) for p in midpoints]
                 sort!(topdpoints)
                 for (topd, p) in topdpoints[1 : 1]
-                    if topd < - epsilon
+                    if topd < - EPS
                         push!(pts,p)
                         crossing = true;
                     end
@@ -71,10 +73,10 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
             for i in 1: length(lowIntersec) -1
                 dp = lowIntersec[i + 1] - lowIntersec[i]
                 midpoints = collect(lowIntersec[i] : dp / 10 : lowIntersec[i + 1])
-                lowdpoints = [(lowerDistance(p), p) for p in midpoints]
+                lowdpoints = [(lowerDistanceRel(p), p) for p in midpoints]
                 sort!(lowdpoints)
                 for (lowd, p) in lowdpoints[1 : 1]
-                    if lowd < - epsilon
+                    if lowd < - EPS
                         push!(pts,p)
                         crossing = true
                     end
@@ -96,7 +98,7 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
         notCover = pts[index+1]
 
         #verify if 
-        if notCover - lastCovered < epsilon #|| notCover == newMax
+        if notCover - lastCovered < EPS #|| notCover == newMax
             return line
         end
     
