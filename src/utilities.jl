@@ -63,7 +63,11 @@ function breakpoints(pwl, ε = 1e-5)
 end
 
 function get_scale(f::Ef, x1::Real, x2::Real)::Float64
-    return max(abs(f(x1)), abs(f(x2)))
+    resmax = optimize(x -> -f(x), x1, x2)
+    resmin = optimize(x -> f(x), x1, x2)
+    xmax = resmax.minimum
+    xmin = resmin.minimum
+    return max(abs(f(xmax)), abs(f(xmin)))
 end
 
 function scale_function(f::Ef, s::Real)::Ef
