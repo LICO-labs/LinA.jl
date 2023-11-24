@@ -21,18 +21,11 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
     pts = collect(range(start,maximum,length=50))
     data = FctSample.(pts, lower,upper)
     
-    succes=false;
+    success = false
     topIntersec = []
     lowIntersec = []
     
-    #find if the solution on the discretized problem works on the original problem 
-    topDistance = x-> upper(x) - line.fct(x)
-    lowerDistance = x-> line.fct(x) - lower(x)
-    
-    topDistanceRel = x-> topDistance(x) / max(1e-3, (abs(upper(x)) + abs(line.fct(x))))
-    lowerDistanceRel = x-> lowerDistance(x) / max(1e-3, (abs(lower(x)) + abs(line.fct(x))))
-
-    while !succes
+    while !success
         
         crossing = true
         
@@ -42,6 +35,10 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
             data = FctSample.(pts, lower,upper)
             line = ORourke(data)
 
+            #find if the solution on the discretized problem works on the original problem 
+            topDistance = x-> upper(x) - line.fct(x)
+            lowerDistance = x-> line.fct(x) - lower(x)
+    
             #try catch to handle rare cases with function asymptotic to zero
             try
                 topIntersec = find_zeros(topDistanceRel,line.xMin,line.xMax)
@@ -61,15 +58,10 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
             for i in 1: length(topIntersec) -1
                 dp = topIntersec[i + 1] - topIntersec[i]
                 midpoints = collect(topIntersec[i] : dp / 10 : topIntersec[i + 1])
-                topdpoints = [(topDistanceRel(p), p) for p in midpoints]
+                topdpoints = [(topDistance(p), p) for p in midpoints]
                 sort!(topdpoints)
-                # n = ceil(Int64, length(topdpoints) / 5)
-                # topdpoints = topdpoints[1 : n]
                 for (topd, p) in topdpoints[1 : 1]
-                    #other criteria if differentiable
-                    #if topDistance'(topIntersec[i]) < 0
                     if topd < - epsilon
-                        # println("adding point $p with violation of $topd)")
                         push!(pts,p)
                         crossing = true;
                     end
@@ -79,13 +71,9 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
             for i in 1: length(lowIntersec) -1
                 dp = lowIntersec[i + 1] - lowIntersec[i]
                 midpoints = collect(lowIntersec[i] : dp / 10 : lowIntersec[i + 1])
-                lowdpoints = [(lowerDistanceRel(p), p) for p in midpoints]
+                lowdpoints = [(lowerDistance(p), p) for p in midpoints]
                 sort!(lowdpoints)
-                # n = ceil(Int64, length(lowdpoints) / 5)
-                # lowdpoints = lowdpoints[1 : n]
                 for (lowd, p) in lowdpoints[1 : 1]
-                    #other criteria if differentiable
-                    #if lowerDistance'(lowIntersec[i]) < 0
                     if lowd < - epsilon
                         push!(pts,p)
                         crossing = true
@@ -120,17 +108,17 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
         uExtend = maximum
         
         try 
-            lExtend = find_zero(lowerDistanceRel, line.xMax,maximum)
+            lExtend = find_zero(x -> line.fct(x) - lower(x), line.xMax,maximum)
             catch y
         end
         try 
-            uExtend = find_zero(topDistanceRel, line.xMax,maximum)
+            uExtend = find_zero(x -> line.fct(x) - upper(x), line.xMax,maximum)
             catch y
         end
         furthest = min(uExtend,lExtend)
         push!(pts, furthest)
-        push!(pts, (notCover + furthest)/2 )
-        push!(pts, (notCover + lastCovered)/2 )
+        push!(pts, (notCover + furthest) / 2 )
+        push!(pts, (notCover + lastCovered) / 2 )
 
         
         
