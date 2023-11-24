@@ -65,9 +65,9 @@ end
 function get_scale(f::Ef, x1::Real, x2::Real)::Float64
     resmax = optimize(x -> -f(x), x1, x2)
     resmin = optimize(x -> f(x), x1, x2)
-    xmax = resmax.minimum
-    xmin = resmin.minimum
-    return max(abs(f(xmax)), abs(f(xmin)))
+    vmax = resmax.minimum
+    vmin = resmin.minimum
+    return max(abs(vmax), abs(vmin))
 end
 
 function scale_function(f::Ef, s::Real)::Ef
