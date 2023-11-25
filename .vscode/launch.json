@@ -11,7 +11,7 @@
             "program": "${file}",
             "stopOnEntry": false,
             "cwd": "${workspaceFolder}",
-            "juliaEnv": "${command:activeJuliaEnvironment}"
+            "juliaEnv": "${command:activeJuliaEnvironment}",
         }
     ]
 }
