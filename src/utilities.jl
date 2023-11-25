@@ -83,11 +83,11 @@ function scale_linearpiece(lp::LinearPiece, s::Real)::LinearPiece
 end
 
 function find_zeros(f::Ef, x1::Real, x2::Real)::Vector{Real}
-    zs = roots(f, interval(x1, x2))
+    zs = IntervalRootFinding.roots(f, x1..x2)
     return [(z.interval.hi + z.interval.lo) / 2 for z in zs]
 end
 
 function find_zero(f::Ef, x1::Real, x2::Real)::Real
-    zeros = find_zeros(f, x1, x2)
+    zeros = LinA.find_zeros(f, x1, x2)
     return isempty(zeros) ? NaN : zeros[begin]
 end

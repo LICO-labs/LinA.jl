@@ -38,8 +38,8 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
             topDistance = x-> upper(x) - line.fct(x)
             lowerDistance = x-> line.fct(x) - lower(x)
 
-            topDistanceRel = x -> topDistance(x) / max(1e-10, max(abs(upper(x)), abs(line.fct(x))))
-            lowerDistanceRel = x -> lowerDistance(x) / max(1e-10, max(abs(lower(x)), abs(line.fct(x))))
+            topDistanceRel = x -> (topDistance(x) / max(EPS, abs(upper(x))))
+            lowerDistanceRel = x -> (lowerDistance(x) / max(EPS, abs(lower(x))))
     
             #try catch to handle rare cases with function asymptotic to zero
             try
@@ -95,11 +95,16 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
         
         
         index = findfirst(isequal(lastCovered), pts)
+        # index = findfirst(t -> abs(t - lastCovered) < 1e-7, pts)
         notCover = pts[index+1]
+        @assert(!isnan(notCover), "notCover is NaN, points are $pts and index + 1 = $(index + 1)")
 
         #verify if 
-        if notCover - lastCovered < max(EPS, 1e-5) #|| notCover == newMax
+        if notCover - lastCovered < EPS #|| notCover == newMax
+            # println("breaking loop, notCover = $notCover, lastCovered = $lastCovered")
             return line
+        else
+            # println("continuing loop, notCover = $notCover, lastCovered = $lastCovered, $(notCover - lastCovered)")
         end
     
         
@@ -111,16 +116,19 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
         
         try 
             lowerDistance = x -> line.fct(x) - lower(x)
-            lowerDistanceRel = x -> lowerDistance(x) / max(1e-10, max(abs(lower(x)), abs(line.fct(x))))
-            lExtend = find_zero(lowerDistanceRel, line.xMax,maximum)
+            lowerDistanceRel = x -> lowerDistance(x) / max(EPS, abs(lower(x)))
+            lExtend = find_zeros(lowerDistanceRel, line.xMax, maximum)[1]
             catch y
         end
         try 
             topDistance = x-> upper(x) - line.fct(x)
-            topDistanceRel = x -> topDistance(x) / max(1e-10, max(abs(upper(x)), abs(line.fct(x))))
-            uExtend = find_zero(topDistanceRel, line.xMax,maximum)
+            topDistanceRel = x -> topDistance(x) / max(EPS, abs(upper(x)))
+            uExtend = find_zeros(topDistanceRel, line.xMax, maximum)[1]
             catch y
         end
+        @assert(!isnan(uExtend), "uExtend is nan")
+        @assert(!isnan(lExtend), "lExtend is nan")
+        @assert(!isnan(notCover), "notCover is nan")
         furthest = min(uExtend,lExtend)
         push!(pts, furthest)
         push!(pts, (notCover + furthest) / 2 )
