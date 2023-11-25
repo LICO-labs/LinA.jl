@@ -98,7 +98,7 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
         notCover = pts[index+1]
 
         #verify if 
-        if notCover - lastCovered < EPS #|| notCover == newMax
+        if notCover - lastCovered < max(EPS, 1e-5) #|| notCover == newMax
             return line
         end
     
@@ -110,11 +110,15 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
         uExtend = maximum
         
         try 
-            lExtend = find_zero(x -> line.fct(x) - lower(x), line.xMax,maximum)
+            lowerDistance = x -> line.fct(x) - lower(x)
+            lowerDistanceRel = x -> lowerDistance(x) / max(1e-10, max(abs(lower(x)), abs(line.fct(x))))
+            lExtend = find_zero(lowerDistanceRel, line.xMax,maximum)
             catch y
         end
         try 
-            uExtend = find_zero(x -> line.fct(x) - upper(x), line.xMax,maximum)
+            topDistance = x-> upper(x) - line.fct(x)
+            topDistanceRel = x -> topDistance(x) / max(1e-10, max(abs(upper(x)), abs(line.fct(x))))
+            uExtend = find_zero(topDistanceRel, line.xMax,maximum)
             catch y
         end
         furthest = min(uExtend,lExtend)
