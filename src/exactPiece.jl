@@ -100,7 +100,7 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
         @assert(!isnan(notCover), "notCover is NaN, points are $pts and index + 1 = $(index + 1)")
 
         #verify if 
-        if notCover - lastCovered < max(EPS, 1e-5) #|| notCover == newMax
+        if notCover - lastCovered < EPS #|| notCover == newMax
             # println("breaking loop, notCover = $notCover, lastCovered = $lastCovered")
             return line
         else
