@@ -6,6 +6,10 @@ function PointPlane(p::dataError)
     # a and b are the variables to optimize
     # -x*a - b < - ymin
     # x*a + b < ymax
+    if p.yMin > p.yMax && abs(p.yMin - p.yMax) < 1e-5
+        avg = (p.yMin + p.yMax) / 2
+        p = dataError(p.x, avg, avg)
+    end
     return HalfSpace([-p.x, -1], -p.yMin) ∩ HalfSpace([p.x, 1], p.yMax)
 end
 
