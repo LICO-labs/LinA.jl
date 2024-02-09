@@ -1,8 +1,8 @@
 
-include("ORourke.jl")
+
 
 """
-    exactPiece(start::Real,maximum::Real,lower,upper)
+    ExactPiece(start::Real,maximum::Real,lower,upper)
 
 Computes the maximal linear piece starting at `start` which lies in between `lower` and `upper`. Works for any continuous `lower` and `upper`.
 # Arguments
@@ -11,15 +11,15 @@ Computes the maximal linear piece starting at `start` which lies in between `low
 - `lower` : lower bound of the corridor
 - `upper` : upper bound of the corridor
 """
-function exactPiece(start::Real,maximum::Real,lower,upper)
+function ExactPiece(start::Real,maximum::Real,lower,upper)
     #TODO: add epsilon as an argument for the user
     #TODO: If intersections are epsilon close skip intersections
     
     #numerical precision 
     epsilon = 1e-5 
     line = LinearPiece(0,0,0,0,x->0)
-    pts = collect(range(start,maximum,length=40))
-    data = fctSample.(pts, lower,upper)
+    pts = collect(range(start,maximum,length=50))
+    data = FctSample.(pts, lower,upper)
     
     succes=false;
     topIntersec = []
@@ -32,7 +32,7 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
         while crossing
             
             sort!(pts)
-            data = fctSample.(pts, lower,upper)
+            data = FctSample.(pts, lower,upper)
             line = ORourke(data)
 
             #find if the solution on the discretized problem works on the original problem 
@@ -67,7 +67,7 @@ function exactPiece(start::Real,maximum::Real,lower,upper)
                     
                     #previously any precision of 1e-5 or below very rarely caused an infinite loop here because of the conversion 
                     #Rational{BigInt} <->  float64 used in ORourke ( method CDDLib.Library(:exact)) which is why randomization was used
-                    push!(pts,randomMidPoint(topIntersec[i], topIntersec[i+1]))
+                    push!(pts,RandomMidPoint(topIntersec[i], topIntersec[i+1]))
                     
                     crossing = true;
                 end

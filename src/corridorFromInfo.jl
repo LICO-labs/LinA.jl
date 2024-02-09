@@ -4,9 +4,9 @@
 
 
 """
-    corridorFromInfo(x1::Real,x2::Real,expr_fct::Ef,e::ErrorType,bounding::BoundingType)
+    CorridorFromInfo(x1::Real,x2::Real,expr_fct::Ef,e::ErrorType,bounding::BoundingType)
 
-Create a corridor from an error type and bounding style. This corridor is a tuple (start,end,lowerBound, upperbound, derivative of the upper bound)
+Create a corridor from an error type and bounding style. This corridor is a tuple (start,end,lowerBound, upperbound, derivative of the Upper bound)
 
 # Arguments
 - `x1` : from
@@ -15,39 +15,39 @@ Create a corridor from an error type and bounding style. This corridor is a tupl
 - `e` : error type. Both Absolute() and Relative() are implemented
 - `bounding` : `Under()` for an underestimation, `Over()` for an overestimation, `Best()` for estimation that can go under or over the function.
 """
-function corridorFromInfo(x1::Real,x2::Real,expr_fct::Ef,e::ErrorType,bounding::BoundingType)
+function CorridorFromInfo(x1::Real,x2::Real,expr_fct::Ef,e::ErrorType,bounding::BoundingType)
 
-    feval =  fctMaker(expr_fct)
+    feval =  FctMaker(expr_fct)
 
     f(y::Real) = feval(y)
 
-    temp = derive(expr_fct)
-    tempEval = fctMaker(temp)
+    temp = Derive(expr_fct)
+    TempEval = FctMaker(temp)
     
 
-    df = y::Real -> tempEval(y)
-    #note that upper return the function and it's derivative
-    return x1,x2,lower(x1,x2,f,e,bounding),upper(x1,x2,f,df,e,bounding)...
+    df = y::Real -> TempEval(y)
+    #note that Upper return the function and it's derivative
+    return x1,x2,Lower(x1,x2,f,e,bounding),Upper(x1,x2,f,df,e,bounding)...
 end
 
 #In the case of underestimation or overestimation one of the bound is the function itself
-upper(x1::Real,x2::Real,f::Function,df::Function,e::ErrorType,::Under)  = x::Real -> f(x),df
-lower(x1::Real,x2::Real,f::Function,e::ErrorType,::Over)  = x::Real -> f(x)
+Upper(x1::Real,x2::Real,f::Function,df::Function,e::ErrorType,::Under)  = x::Real -> f(x),df
+Lower(x1::Real,x2::Real,f::Function,e::ErrorType,::Over)  = x::Real -> f(x)
 
 
-#in the case of best approximation, the bounds are defined the same as under for the lower function
-#and upper for the top function
-lower(x1::Real,x2::Real,f::Function,e::ErrorType,::Best)  = lower(x1,x2,f,e,Under())
-upper(x1::Real,x2::Real,f::Function,df::Function,e::ErrorType,::Best) = upper(x1,x2,f,df,e,Over())
+#in the case of best approximation, the bounds are defined the same as under for the Lower function
+#and Upper for the top function
+Lower(x1::Real,x2::Real,f::Function,e::ErrorType,::Best)  = Lower(x1,x2,f,e,Under())
+Upper(x1::Real,x2::Real,f::Function,df::Function,e::ErrorType,::Best) = Upper(x1,x2,f,df,e,Over())
 
 
 #absolute error case
-lower(x1::Real,x2::Real,f::Function,e::Absolute,::Under)  = x::Real -> f(x) - e.delta
-upper(x1::Real,x2::Real,f::Function,df::Function,e::Absolute,::Over) = x::Real -> f(x) + e.delta,df
+Lower(x1::Real,x2::Real,f::Function,e::Absolute,::Under)  = x::Real -> f(x) - e.delta
+Upper(x1::Real,x2::Real,f::Function,df::Function,e::Absolute,::Over) = x::Real -> f(x) + e.delta,df
 
 
 #Relative error case
-function lower(x1::Real,x2::Real,f::Function,e::Relative,::Under;ε = 1e-5)
+function Lower(x1::Real,x2::Real,f::Function,e::Relative,::Under;ε = 1e-5)
    # TODO ADD TOLERANCE as a parameter to the user
    # This 10.0^(-5) seems arbitrairy but commes from the litterature 
    # and it helps to gives a sensible definition for a relative corridor that starts at y=0 
@@ -58,7 +58,7 @@ function lower(x1::Real,x2::Real,f::Function,e::Relative,::Under;ε = 1e-5)
     return x::Real -> f(x)*(1 + e.percent/100) + ε 
 end
 
-function upper(x1::Real,x2::Real,f::Function,df::Function,e::Relative,::Over;ε = 1e-5)
+function Upper(x1::Real,x2::Real,f::Function,df::Function,e::Relative,::Over;ε = 1e-5)
    # TODO ADD TOLERANCE as a parameter to the user
    # This 10.0^(-5) seems arbitrairy but commes from the litterature 
    # and it helps to gives a sensible definition for a relative corridor that starts at y=0 

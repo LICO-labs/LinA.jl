@@ -1,13 +1,13 @@
-include("Heuristic.jl")
-include("exact method.jl")
 
+
+#This file is used to dispatch Linearize() on an optional argument (e::ErrorType)
 
 """
     Linearize(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = Best() ::BoundingType, ConcavityChanges = [Inf]::Array{Float64,1})
 
 Makes an optimal piecewise Linear approximation of expr_fct from x1 to x2. The result will be an array of `LinearPiece`. Note that the array is directly callable as a function.
 # Arguments
-- `expr_fct` : function to linearize (either an expresion or a native julia function)
+- `expr_fct` : function to linearize from R to R (either an expression or a native julia function)
 - `x1` : from
 - `x2` : to
 - `e` : error type either Absolute() or Relative()
@@ -19,6 +19,10 @@ Makes an optimal piecewise Linear approximation of expr_fct from x1 to x2. The r
 !!! note
     It is also possible to specify which algorithm to use between `HeuristicLin()` and `ExactLin()` by simply adding it after the error type.
     By default LinA uses the heuristic.
+
+
+!!! note
+    If the function is given by a expression, the variable is assume to be `x`
 
 # Example
 ```julia-repl
@@ -35,17 +39,22 @@ julia> pwl(1)
 function Linearize(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = Best() ::BoundingType,
 ConcavityChanges = [Inf]::Array{Float64,1})
 
+    (isfinite(x1) && isfinite(x2)) || throw(ArgumentError("Must be called on a finite interval"))
+
     return HeuristicLin(expr_fct,x1,x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges)
 end
 
 function Linearize(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType,algorithm::HeuristicLin; bounding = Best() ::BoundingType,
     ConcavityChanges = [Inf]::Array{Float64,1})
 
-        return HeuristicLin(expr_fct,x1,x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges)
+    (isfinite(x1) && isfinite(x2)) || throw(ArgumentError("Must be called on a finite interval"))
+    return HeuristicLin(expr_fct,x1,x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges)
 end
 
 function Linearize(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType,algorithm::ExactLin; bounding = Best() ::BoundingType,
     ConcavityChanges = [Inf]::Array{Float64,1})
 
-        return exactLin(expr_fct,x1,x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges)
+    (isfinite(x1) && isfinite(x2)) || throw(ArgumentError("Must be called on a finite interval"))
+
+    return ExactLin(expr_fct,x1,x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges)
 end

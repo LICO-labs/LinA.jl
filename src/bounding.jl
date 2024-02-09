@@ -1,6 +1,5 @@
 
-include("Linearize Dispatch.jl")
-include("exact method.jl")
+
 
 
 #to dispatch

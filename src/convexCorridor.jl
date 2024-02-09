@@ -31,7 +31,7 @@ function LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
         if f(x2) >= 0
             slope = (upper(x2) - lower(x1)) / (x2 - x1)
             b = lower(x1) - slope * x1
-            push!(pwl,LinearPiece(x1,x2,slope,b,paraToFncLin(slope,b)))
+            push!(pwl,LinearPiece(x1,x2,slope,b,ParaToFncLin(slope,b)))
             break
         end
 
@@ -46,7 +46,7 @@ function LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
             nextX1 = x2
         end
 
-        push!(pwl,LinearPiece(x1,nextX1,slope,b,paraToFncLin(slope,b)))
+        push!(pwl,LinearPiece(x1,nextX1,slope,b,ParaToFncLin(slope,b)))
 
         x1 = nextX1
     end
