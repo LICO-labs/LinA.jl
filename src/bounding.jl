@@ -6,7 +6,7 @@
 function LinearBounding(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType;
     ConcavityChanges = [Inf]::Array{Float64,1} )
     
-    LinearBounding(expr_fct,x1,x2, e , HeuristicLin());ConcavityChanges = ConcavityChanges  )
+    LinearBounding(expr_fct,x1,x2, e , HeuristicLin();ConcavityChanges = ConcavityChanges  )
     
 end
 
