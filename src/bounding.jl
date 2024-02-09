@@ -14,7 +14,7 @@ end
 function LinearBounding(expr_fct::Ef,x1::Real,x2::Real, e::Absolute,algorithm;
     ConcavityChanges = [Inf]::Array{Float64,1} )
 
-under = Linearize(expr_fct,x1,x2, e; bounding = Under(),algorithm,ConcavityChanges = ConcavityChanges )
+under = Linearize(expr_fct,x1,x2, e,algorithm; bounding = Under(),ConcavityChanges = ConcavityChanges )
 
 return under, under + 2*e.delta
 
@@ -43,8 +43,8 @@ Makes an optimal piecewise Linear underestimation and overestimation of expr_fct
 """
 function LinearBounding(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType,algorithm; ConcavityChanges = [Inf]::Array{Float64,1} )
     
-lower = Linearize(expr_fct,x1,x2, e; bounding = Under(),algorithm,ConcavityChanges = ConcavityChanges )
-upper = Linearize(expr_fct,x1,x2, e; bounding = Over(),algorithm,ConcavityChanges = ConcavityChanges )
+lower = Linearize(expr_fct,x1,x2, e,algorithm; bounding = Under(),ConcavityChanges = ConcavityChanges )
+upper = Linearize(expr_fct,x1,x2, e,algorithm; bounding = Over(),ConcavityChanges = ConcavityChanges )
 return lower,upper 
     
 end
