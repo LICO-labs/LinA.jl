@@ -6,7 +6,7 @@ using GeneralizedGenerated
 
 
 
-export Linearize , LinearBounding
+export Linearize , LinearBounding, SimultaneousLin
 export Absolute, Relative, Best, Under, Over, HeuristicLin, ExactLin
 export isContinuous, breakpoints
 
@@ -26,6 +26,7 @@ include("exactMethod.jl")
 
 include("linearizeDispatch.jl")
 include("bounding.jl")
+include("simultaneousLin.jl")
 
 
 end # module
