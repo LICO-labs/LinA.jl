@@ -2,14 +2,16 @@
 
 function ExactLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = Best() ::BoundingType, 
                     ConcavityChanges = [Inf]::Array{Float64,1} )
+
+    # println("running ExactLin")
     if x1 >= x2
         return Float64[]
     end
    
-    
     if ConcavityChanges == [Inf]
         ConcavityChanges = ConcavitySplit(x1,x2,expr_fct)
     end
+    
     ConcavityChanges = [x1;ConcavityChanges;x2] 
     ConcavityChanges = sort(unique(ConcavityChanges)) # make sure that the bounds are there
     pwl = Array{LinearPiece}(undef, 0)

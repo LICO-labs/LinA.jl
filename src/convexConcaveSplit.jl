@@ -15,7 +15,6 @@
     f(x) = temp(x)
 
     try
-
         return find_zeros(f,x1,x2)
     catch y
         #if the second derivative is almost zero on an interval

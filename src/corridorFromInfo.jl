@@ -47,24 +47,26 @@ Upper(x1::Real,x2::Real,f::Function,df::Function,e::Absolute,::Over) = x::Real -
 
 
 #Relative error case
-function Lower(x1::Real,x2::Real,f::Function,e::Relative,::Under;ε = 1e-5)
+function Lower(x1::Real,x2::Real,f::Function,e::Relative,::Under;ε = EPS)
    # TODO ADD TOLERANCE as a parameter to the user
    # This 10.0^(-5) seems arbitrairy but commes from the litterature 
    # and it helps to gives a sensible definition for a relative corridor that starts at y=0 
 
     if f((x1+x2)/2) >= 0
        return  x::Real -> f(x)*(1 - e.percent/100) - ε 
+    else
+        return x::Real -> f(x)*(1 + e.percent/100) + ε 
     end
-    return x::Real -> f(x)*(1 + e.percent/100) + ε 
 end
 
-function Upper(x1::Real,x2::Real,f::Function,df::Function,e::Relative,::Over;ε = 1e-5)
+function Upper(x1::Real,x2::Real,f::Function,df::Function,e::Relative,::Over;ε = EPS)
    # TODO ADD TOLERANCE as a parameter to the user
    # This 10.0^(-5) seems arbitrairy but commes from the litterature 
    # and it helps to gives a sensible definition for a relative corridor that starts at y=0 
 
     if f((x1+x2)/2) >= 0
-       return x::Real -> f(x)*(1 + e.percent/100) + ε ,x->(1 + e.percent/100)*df(x)#f(x)*(1 + e.percent/100) + 10.0^(-5),x->(1 + e.percent/100)*df(x)
+        return x::Real -> f(x)*(1 + e.percent/100) + ε ,x->(1 + e.percent/100)*df(x)#f(x)*(1 + e.percent/100) + 10.0^(-5),x->(1 + e.percent/100)*df(x)
+    else
+        return x::Real -> f(x)*(1 - e.percent/100) - ε ,x->(1 - e.percent/100)*df(x)#f(x)*(1 - e.percent/100) + 10.0^(-5),x->(1 - e.percent/100)*df(x)
     end
-    return x::Real -> f(x)*(1 - e.percent/100) - ε ,x->(1 - e.percent/100)*df(x)#f(x)*(1 - e.percent/100) + 10.0^(-5),x->(1 - e.percent/100)*df(x)
 end

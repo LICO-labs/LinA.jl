@@ -41,14 +41,15 @@ ConcavityChanges = [Inf]::Array{Float64,1})
 
     (isfinite(x1) && isfinite(x2)) || throw(ArgumentError("Must be called on a finite interval"))
 
-    return HeuristicLin(expr_fct,x1,x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges)
+    return ScaledLinearize(expr_fct, x1, x2, e, HeuristicLin, bounding, ConcavityChanges)
 end
 
 function Linearize(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType,algorithm::HeuristicLin; bounding = Best() ::BoundingType,
     ConcavityChanges = [Inf]::Array{Float64,1})
 
     (isfinite(x1) && isfinite(x2)) || throw(ArgumentError("Must be called on a finite interval"))
-    return HeuristicLin(expr_fct,x1,x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges)
+    
+    return ScaledLinearize(expr_fct, x1, x2, e, HeuristicLin, bounding, ConcavityChanges)
 end
 
 function Linearize(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType,algorithm::ExactLin; bounding = Best() ::BoundingType,
@@ -56,5 +57,13 @@ function Linearize(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType,algorithm::Exact
 
     (isfinite(x1) && isfinite(x2)) || throw(ArgumentError("Must be called on a finite interval"))
 
-    return ExactLin(expr_fct,x1,x2, e; bounding = bounding, ConcavityChanges = ConcavityChanges)
+    return ScaledLinearize(expr_fct, x1, x2, e, ExactLin, bounding, ConcavityChanges)
+end
+
+function ScaledLinearize(f::Ef, x1::Real, x2::Real, e::ErrorType, LinAlg::Union{Type{ExactLin}, Type{HeuristicLin}}, bounding::BoundingType, concavity_changes)::Vector{LinearPiece}
+    s = get_scale(f, x1, x2)
+    g = scale_function(f, 1/s)
+    newe = e isa Absolute ? Absolute(e.delta / s) : e
+    lps = LinAlg(g,x1,x2, newe; bounding = bounding, ConcavityChanges = concavity_changes)
+    return [scale_linearpiece(lp, s) for lp in lps]
 end

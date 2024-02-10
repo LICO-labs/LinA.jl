@@ -16,16 +16,15 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
     #TODO: If intersections are epsilon close skip intersections
     
     #numerical precision 
-    epsilon = 1e-5 
     line = LinearPiece(0,0,0,0,x->0)
     pts = collect(range(start,maximum,length=50))
     data = FctSample.(pts, lower,upper)
     
-    succes=false;
+    success = false
     topIntersec = []
     lowIntersec = []
     
-    while !succes
+    while !success
         
         crossing = true
         
@@ -38,16 +37,19 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
             #find if the solution on the discretized problem works on the original problem 
             topDistance = x-> upper(x) - line.fct(x)
             lowerDistance = x-> line.fct(x) - lower(x)
-            
+
+            topDistanceRel = x -> (topDistance(x) / max(EPS, abs(upper(x))))
+            lowerDistanceRel = x -> (lowerDistance(x) / max(EPS, abs(lower(x))))
+    
             #try catch to handle rare cases with function asymptotic to zero
             try
-                topIntersec = find_zeros(topDistance,line.xMin,line.xMax)
+                topIntersec = find_zeros(topDistanceRel,line.xMin,line.xMax)
             catch
                 topIntersec = []
             end
             
             try
-                lowIntersec = find_zeros(lowerDistance,line.xMin,line.xMax)
+                lowIntersec = find_zeros(lowerDistanceRel,line.xMin,line.xMax)
             catch
                 lowIntersec = []
             end
@@ -56,36 +58,29 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
             crossing = false
             
             for i in 1: length(topIntersec) -1
-                
-                #other criteria if differentiable
-                #if topDistance'(topIntersec[i]) < 0
-                if topDistance((topIntersec[i]+topIntersec[i+1])/2) <- epsilon
-                    
-                    push!(pts,topIntersec[i])
-                    push!(pts,(topIntersec[i]+topIntersec[i+1])/2)
-                    push!(pts,topIntersec[i+1])
-                    
-                    #previously any precision of 1e-5 or below very rarely caused an infinite loop here because of the conversion 
-                    #Rational{BigInt} <->  float64 used in ORourke ( method CDDLib.Library(:exact)) which is why randomization was used
-                    push!(pts,RandomMidPoint(topIntersec[i], topIntersec[i+1]))
-                    
-                    crossing = true;
+                dp = topIntersec[i + 1] - topIntersec[i]
+                midpoints = collect(topIntersec[i] : dp / 10 : topIntersec[i + 1])
+                topdpoints = [(topDistanceRel(p), p) for p in midpoints]
+                sort!(topdpoints)
+                for (topd, p) in topdpoints[1 : 1]
+                    if topd < - EPS
+                        push!(pts,p)
+                        crossing = true;
+                    end
                 end
-                
             end
             
             for i in 1: length(lowIntersec) -1
-                #other criteria if differentiable
-                #if lowerDistance'(lowIntersec[i]) < 0
-                if lowerDistance((lowIntersec[i] + lowIntersec[i+1])/2) < - epsilon
-                    
-                    
-                    push!(pts,lowIntersec[i])
-                    push!(pts,(lowIntersec[i] + lowIntersec[i+1])/2)
-                    push!(pts,lowIntersec[i+1])
-                
+                dp = lowIntersec[i + 1] - lowIntersec[i]
+                midpoints = collect(lowIntersec[i] : dp / 10 : lowIntersec[i + 1])
+                lowdpoints = [(lowerDistanceRel(p), p) for p in midpoints]
+                sort!(lowdpoints)
+                for (lowd, p) in lowdpoints[1 : 1]
+                    if lowd < - EPS
+                        push!(pts,p)
+                        crossing = true
+                    end
                 end
-                
             end
             
             
@@ -100,11 +95,16 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
         
         
         index = findfirst(isequal(lastCovered), pts)
+        # index = findfirst(t -> abs(t - lastCovered) < 1e-7, pts)
         notCover = pts[index+1]
+        @assert(!isnan(notCover), "notCover is NaN, points are $pts and index + 1 = $(index + 1)")
 
         #verify if 
-        if notCover - lastCovered < epsilon #|| notCover == newMax
+        if notCover - lastCovered < EPS #|| notCover == newMax
+            # println("breaking loop, notCover = $notCover, lastCovered = $lastCovered")
             return line
+        else
+            # println("continuing loop, notCover = $notCover, lastCovered = $lastCovered, $(notCover - lastCovered)")
         end
     
         
@@ -115,17 +115,24 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
         uExtend = maximum
         
         try 
-            lExtend = find_zeros(x-> line.fct(x) - lower(x), line.xMax,maximum)[1]
+            lowerDistance = x -> line.fct(x) - lower(x)
+            lowerDistanceRel = x -> lowerDistance(x) / max(EPS, abs(lower(x)))
+            lExtend = find_zeros(lowerDistanceRel, line.xMax, maximum)[1]
             catch y
         end
         try 
-            uExtend = find_zeros(x-> line.fct(x) - upper(x), line.xMax,maximum)[1]
+            topDistance = x-> upper(x) - line.fct(x)
+            topDistanceRel = x -> topDistance(x) / max(EPS, abs(upper(x)))
+            uExtend = find_zeros(topDistanceRel, line.xMax, maximum)[1]
             catch y
         end
+        @assert(!isnan(uExtend), "uExtend is nan")
+        @assert(!isnan(lExtend), "lExtend is nan")
+        @assert(!isnan(notCover), "notCover is nan")
         furthest = min(uExtend,lExtend)
         push!(pts, furthest)
-        push!(pts, (notCover + furthest)/2 )
-        push!(pts, (notCover + lastCovered)/2 )
+        push!(pts, (notCover + furthest) / 2 )
+        push!(pts, (notCover + lastCovered) / 2 )
 
         
         

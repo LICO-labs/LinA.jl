@@ -8,7 +8,7 @@ Determine whether a pwl function is continuous up to a numerical precision of ε
 - `ε` : numerical precision used to detect if the end endpoints of two segments are equal (to detect discontinuities)
 
 """
-function isContinuous(pwl, ε = 1e-5) 
+function isContinuous(pwl, ε = EPS) 
 
     
     for i in 1:length(pwl)-1
@@ -38,7 +38,7 @@ Outputs the breakpoints needed for several solvers (CPLEX, Gurobi,...) to native
 - `ε` : numerical precision used to detect if the end endpoints of two segments are equal (to detect discontinuities)
 
 """
-function breakpoints(pwl, ε = 1e-5) 
+function breakpoints(pwl, ε = EPS) 
 
     
     bpx = [pwl[1].xMin]
@@ -62,3 +62,32 @@ function breakpoints(pwl, ε = 1e-5)
     
 end
 
+function get_scale(f::Ef, x1::Real, x2::Real)::Float64
+    resmax = optimize(x -> -f(x), x1, x2)
+    resmin = optimize(x -> f(x), x1, x2)
+    vmax = resmax.minimum
+    vmin = resmin.minimum
+    return max(abs(vmax), abs(vmin))
+end
+
+function scale_function(f::Ef, s::Real)::Ef
+    if f isa Expr
+        return :( eval(f) * s )
+    elseif f isa Function
+        return x -> s * f(x)
+    end
+end
+
+function scale_linearpiece(lp::LinearPiece, s::Real)::LinearPiece
+    return LinearPiece(lp.xMin, lp.xMax, s * lp.a, s * lp.b, x -> s * (lp.a * x + lp.b))
+end
+
+function find_zeros(f::Ef, x1::Real, x2::Real)::Vector{Real}
+    zs = IntervalRootFinding.roots(f, x1..x2)
+    return [(z.interval.hi + z.interval.lo) / 2 for z in zs]
+end
+
+function find_zero(f::Ef, x1::Real, x2::Real)::Real
+    zeros = LinA.find_zeros(f, x1, x2)
+    return isempty(zeros) ? NaN : zeros[begin]
+end

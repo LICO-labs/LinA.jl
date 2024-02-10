@@ -1,9 +1,11 @@
  module LinA
 
-using Roots
+# using Roots
 using Calculus
 using GeneralizedGenerated
-
+using IntervalArithmetic, IntervalRootFinding
+using PrecompileTools
+using Optim
 
 
 export Linearize , LinearBounding, SimultaneousLin
@@ -28,5 +30,13 @@ include("linearizeDispatch.jl")
 include("bounding.jl")
 include("simultaneousLin.jl")
 
-
+@setup_workload begin
+    f = x -> x * (x + 1) * log(x + 2) + 1
+    @compile_workload begin
+        for e in [Relative(1e-1), Absolute(1e-1)], alg in [HeuristicLin, ExactLin], bounding in [Under, Over, Best]
+            pwl = Linearize(f, 0, 1, e, alg(); bounding = bounding())
+            pwl(0.5, bounding)
+        end
+    end
+end
 end # module
