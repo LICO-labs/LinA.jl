@@ -10,7 +10,7 @@ Makes an optimal piecewise Linear approximation from x1 to x2 of a convex corrid
 - du : derivative of the upper function
 
 """
-function LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
+function LinearizeConvex(x1,x2,lower,upper,du)
 
     
     tol = 0.00001 

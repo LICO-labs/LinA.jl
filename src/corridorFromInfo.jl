@@ -34,7 +34,7 @@ end
 Upper(x1::Real,x2::Real,f::Function,df::Function,e::ErrorType,::Under)  = f,df
 Lower(x1::Real,x2::Real,f::Function,e::ErrorType,::Over)  = f
 
-struct Shift{F,T} <: Function
+struct Shift{F,T}
     f::F
     Δ::T
 end
@@ -50,7 +50,7 @@ Upper(x1::Real,x2::Real,f::Function,df::Function,e::ErrorType,::Best) = Upper(x1
 Lower(x1::Real,x2::Real,f::Function,e::Absolute,::Under)  = Shift(f, - e.delta)
 Upper(x1::Real,x2::Real,f::Function,df::Function,e::Absolute,::Over) = Shift(f, + e.delta),df
 
-struct Scale{F,T} <: Function
+struct Scale{F,T}
     f::F
     α::T
 end
