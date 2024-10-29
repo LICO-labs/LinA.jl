@@ -19,7 +19,7 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
     epsilon = 1e-5 
     line = LinearPiece(0,0,0,0,x->0)
     pts = collect(range(start,maximum,length=50))
-    data = FctSample.(pts, lower,upper)
+    data = FctSample.(pts, Ref(lower),Ref(upper))
     
     succes=false;
     topIntersec = []
@@ -32,7 +32,7 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
         while crossing
             
             sort!(pts)
-            data = FctSample.(pts, lower,upper)
+            data = FctSample.(pts, Ref(lower),Ref(upper))
             line = ORourke(data)
 
             #find if the solution on the discretized problem works on the original problem 

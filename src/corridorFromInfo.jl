@@ -25,26 +25,37 @@ function CorridorFromInfo(x1::Real,x2::Real,expr_fct::Ef,e::ErrorType,bounding::
     TempEval = FctMaker(temp)
     
 
-    df = y::Real -> TempEval(y)
+    df(y::Real) = TempEval(y)
     #note that Upper return the function and it's derivative
     return x1,x2,Lower(x1,x2,f,e,bounding),Upper(x1,x2,f,df,e,bounding)...
 end
 
 #In the case of underestimation or overestimation one of the bound is the function itself
-Upper(x1::Real,x2::Real,f::Function,df::Function,e::ErrorType,::Under)  = x::Real -> f(x),df
-Lower(x1::Real,x2::Real,f::Function,e::ErrorType,::Over)  = x::Real -> f(x)
+Upper(x1::Real,x2::Real,f::Function,df::Function,e::ErrorType,::Under)  = f,df
+Lower(x1::Real,x2::Real,f::Function,e::ErrorType,::Over)  = f
 
+struct Shift{F,T} <: Function
+    f::F
+    Δ::T
+end
+
+(s::Shift)(x) = s.f(x) + s.Δ
 
 #in the case of best approximation, the bounds are defined the same as under for the Lower function
 #and Upper for the top function
 Lower(x1::Real,x2::Real,f::Function,e::ErrorType,::Best)  = Lower(x1,x2,f,e,Under())
 Upper(x1::Real,x2::Real,f::Function,df::Function,e::ErrorType,::Best) = Upper(x1,x2,f,df,e,Over())
 
-
 #absolute error case
-Lower(x1::Real,x2::Real,f::Function,e::Absolute,::Under)  = x::Real -> f(x) - e.delta
-Upper(x1::Real,x2::Real,f::Function,df::Function,e::Absolute,::Over) = x::Real -> f(x) + e.delta,df
+Lower(x1::Real,x2::Real,f::Function,e::Absolute,::Under)  = Shift(f, - e.delta)
+Upper(x1::Real,x2::Real,f::Function,df::Function,e::Absolute,::Over) = Shift(f, + e.delta),df
 
+struct Scale{F,T} <: Function
+    f::F
+    α::T
+end
+
+(s::Scale)(x) = s.f(x) * s.α
 
 #Relative error case
 function Lower(x1::Real,x2::Real,f::Function,e::Relative,::Under;ε = 1e-5)
@@ -53,9 +64,9 @@ function Lower(x1::Real,x2::Real,f::Function,e::Relative,::Under;ε = 1e-5)
    # and it helps to gives a sensible definition for a relative corridor that starts at y=0 
 
     if f((x1+x2)/2) >= 0
-       return  x::Real -> f(x)*(1 - e.percent/100) - ε 
+       return Shift(Scale(f, 1 - e.percent/100), - ε) 
     end
-    return x::Real -> f(x)*(1 + e.percent/100) + ε 
+    return Shift(Scale(f, 1 + e.percent/100), + ε) 
 end
 
 function Upper(x1::Real,x2::Real,f::Function,df::Function,e::Relative,::Over;ε = 1e-5)
@@ -64,7 +75,7 @@ function Upper(x1::Real,x2::Real,f::Function,df::Function,e::Relative,::Over;ε 
    # and it helps to gives a sensible definition for a relative corridor that starts at y=0 
 
     if f((x1+x2)/2) >= 0
-       return x::Real -> f(x)*(1 + e.percent/100) + ε ,x->(1 + e.percent/100)*df(x)#f(x)*(1 + e.percent/100) + 10.0^(-5),x->(1 + e.percent/100)*df(x)
+       return Shift(Scale(f, 1 + e.percent/100), + ε), Scale(df, 1 + e.percent/100)#f(x)*(1 + e.percent/100) + 10.0^(-5),x->(1 + e.percent/100)*df(x)
     end
-    return x::Real -> f(x)*(1 - e.percent/100) - ε ,x->(1 - e.percent/100)*df(x)#f(x)*(1 - e.percent/100) + 10.0^(-5),x->(1 - e.percent/100)*df(x)
+    return Shift(Scale(f, 1 - e.percent/100), - ε), Scale(df, 1 - e.percent/100)#f(x)*(1 - e.percent/100) + 10.0^(-5),x->(1 - e.percent/100)*df(x)
 end
