@@ -108,8 +108,7 @@ FctMaker(e::Expr) = mk_function(:((x -> $e)))
 FctMaker(e::Function) = e
 FctMaker(x::Number) = y->x
 Derive(x::Number) = 0
-Derive(expr::Expr) = Calculus.simplify(differentiate(expr, :x))
-Derive(f::Function) = z->ForwardDiff.gradient(x->f(x[1]),[z])[1]
-#ForwardDiff.derivative(f, x::Real)
+Derive(expr::Expr) = Calculus.simplify(differentiate(expr, :x))  # this is probably super slow
+Derive(f::Function) = Base.Fix1(ForwardDiff.derivative, f)
 
 ;
