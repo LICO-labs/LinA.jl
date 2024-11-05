@@ -1,4 +1,4 @@
- module LinA
+module LinA
 
 # using Roots
 using Calculus

@@ -19,8 +19,9 @@ function ExactLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = Best(
     
     x2Temp = -1
     i=1
+    println("entering while")
     while x1 < x2
-        
+        println("diff $(x2 - x1)")
         #find next concavity change
         i = searchsortedfirst(ConcavityChanges,x1)
         ConcavityChanges[i] == x1 ? x2Temp = ConcavityChanges[i+1] : x2Temp = ConcavityChanges[i]
@@ -36,5 +37,6 @@ function ExactLin(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType; bounding = Best(
 
         x1 = pwl[end].xMax
     end
+    println("done")
     return pwl
 end
