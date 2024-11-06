@@ -37,6 +37,16 @@ function LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
             break
         end
 
+        if f(x1) * f(x2) > 0 && abs(f(x1)) < EPS
+            xp = perform_binary_sarch_lowf(f, x1, x2)
+            # println("f(xp) = $(f(xp))")
+            slope = du(xp)
+            b = lower(x1) - slope * x1
+            push!(pwl,LinearPiece(x1,xp,slope,b,ParaToFncLin(slope,b)))
+            x1 = xp
+            continue
+        end
+
         a = find_zero(f, x1, x2)
         if isnan(a) && abs(f(x1)) < abs(f(x2)) a = x1
         elseif isnan(a) && abs(f(x2)) < abs(f(x1)) a = x2
@@ -62,4 +72,29 @@ function LinearizeConvex(x1,x2,lower::Function,upper::Function,du::Function)
     # println("end of loop")
     return pwl
 
+end
+
+function perform_binary_sarch_lowf(f, x1, x2)
+    eps = 1e-3
+    xp = x1
+    for _ in 1:5
+        t = 1 + eps
+        while f(xp) * f(x2) > 0 && abs(f(xp)) < EPS
+            xp = min(xp + t * EPS, x2)
+            t *= (1 + eps)
+        end
+        eps *= 0.5
+        t = 1 + eps
+        while f(xp) * f(x2) < 0 || abs(f(xp)) > EPS
+            xp = max(xp - t * EPS, x1)
+            t *= (1 + eps)
+        end
+        eps *= 0.5
+    end
+    t = 1 + eps
+    while f(xp) * f(x2) > 0 && abs(f(xp)) < EPS
+        xp = min(xp + t * EPS, x2)
+        t *= (1 + eps)
+    end
+    return xp
 end
