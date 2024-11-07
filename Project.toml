@@ -1,7 +1,7 @@
 name = "LinA"
 uuid = "f599c993-2677-4f60-8998-71feb0f665db"
 authors = ["Julien Codsi <julien.codsi@umontreal.ca>"]
-version = "1.0.0"
+version = "1.0.1"
 
 [deps]
 CDDLib = "3391f64e-dcde-5f30-b752-e11513730f60"
