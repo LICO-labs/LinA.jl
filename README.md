@@ -1,5 +1,6 @@
 # LinA.jl
-[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://lico-labs.github.io/LinA.jl/)
+[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://lico-labs.github.io/LinA.jl/) [![DOI](https://zenodo.org/badge/510425449.svg)](https://doi.org/10.5281/zenodo.14052031)
+
 
 LinA is a state-of-the-art piecewise linear approximation package which approximates (or over/under-estimates) univariate diffentiable $\mathbb{R} \rightarrow \mathbb{R}$ functions with an optimal (in term of number of segments) piecewise linear function given an error metric.
 Both absolute and relative errors are implemented. It is also possible to add custom error types. LinA works with expressions as well as with native Julia functions.
