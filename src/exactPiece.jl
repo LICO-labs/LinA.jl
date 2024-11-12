@@ -59,7 +59,7 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
             
             for i in 1: length(topIntersec) -1
                 dp = topIntersec[i + 1] - topIntersec[i]
-                midpoints = collect(topIntersec[i] : dp / 10 : topIntersec[i + 1])
+                midpoints = collect(topIntersec[i] : dp / 20 : topIntersec[i + 1])
                 topdpoints = [(topDistanceRel(p), p) for p in midpoints]
                 sort!(topdpoints)
                 for (topd, p) in topdpoints[1 : 1]
@@ -72,7 +72,7 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
             
             for i in 1: length(lowIntersec) -1
                 dp = lowIntersec[i + 1] - lowIntersec[i]
-                midpoints = collect(lowIntersec[i] : dp / 10 : lowIntersec[i + 1])
+                midpoints = collect(lowIntersec[i] : dp / 20 : lowIntersec[i + 1])
                 lowdpoints = [(lowerDistanceRel(p), p) for p in midpoints]
                 sort!(lowdpoints)
                 for (lowd, p) in lowdpoints[1 : 1]

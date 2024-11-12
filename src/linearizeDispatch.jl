@@ -62,9 +62,9 @@ end
 
 function ScaledLinearize(f::Ef, x1::Real, x2::Real, e::ErrorType, LinAlg::Union{Type{ExactLin}, Type{HeuristicLin}}, bounding::BoundingType, concavity_changes)::Vector{LinearPiece}
     s = get_scale(f, x1, x2)
-    # println("scale $s")
-    g = scale_function(f, 1/s)
+    g = scale_function(f, s, x1, x2)
     newe = e isa Absolute ? Absolute(e.delta / s) : e
-    lps = LinAlg(g,x1,x2, newe; bounding = bounding, ConcavityChanges = concavity_changes)
-    return [scale_linearpiece(lp, s) for lp in lps]
+    lps = LinAlg(g, 0.0, 1.0, newe; bounding = bounding, ConcavityChanges = concavity_changes)
+    lps = remove_infeasibilities(lps, g, bounding)  
+    return [scale_linearpiece(lp, s, x1, x2) for lp in lps]
 end
