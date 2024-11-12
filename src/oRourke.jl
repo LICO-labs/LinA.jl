@@ -7,7 +7,7 @@ function PointPlane(p::dataError)
     # -x*a - b < - ymin
     # x*a + b < ymax
     # println("hola")
-    if p.yMin > p.yMax && abs(p.yMin - p.yMax) < 1e-8
+    if p.yMin > p.yMax && abs(p.yMin - p.yMax) < 1e-6
         avg = (p.yMin + p.yMax) / 2
         p = dataError(p.x, avg, avg)
     end

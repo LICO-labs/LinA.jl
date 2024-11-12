@@ -87,10 +87,13 @@ function scale_linearpiece(lp::LinearPiece, s::Real, x1::Real, x2::Real)::Linear
 end
 
 function find_zeros(f::Ef, x1::Real, x2::Real)::Vector{Real}
+    println("root finding with x1 = $x1, x2 = $x2, diff of $(x2 - x1)")
     zs = IntervalRootFinding.roots(f, interval(x1, x2))
-    if isempty(zs) return [] end
+    if isempty(zs) return Float64[] end
     zmin = argmin(z -> min(abs(f(z.region.bareinterval.lo)), abs(f(z.region.bareinterval.hi))), zs)
-    return abs(f(zmin.region.bareinterval.lo)) < abs(f(zmin.region.bareinterval.hi)) ? [zmin.region.bareinterval.lo] : [zmin.region.bareinterval.hi]
+    zvec = abs(f(zmin.region.bareinterval.lo)) < abs(f(zmin.region.bareinterval.hi)) ? Float64[zmin.region.bareinterval.lo] : Float64[zmin.region.bareinterval.hi]
+    println("zvec = $zvec, with f(x) = $(f(zvec[begin]))")
+    return zvec
 end
 
 function find_zero(f::Ef, x1::Real, x2::Real)::Real
