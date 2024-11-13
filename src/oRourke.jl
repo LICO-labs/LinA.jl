@@ -1,5 +1,4 @@
 
-using Polyhedra, CDDLib
 
 
 function PointPlane(p::dataError)

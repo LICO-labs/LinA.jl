@@ -1,8 +1,5 @@
 
 
-import LinearAlgebra.adjoint , Base.-, Base.+, Base.show
-
-using Calculus, ForwardDiff
 
 const Ef=Union{Expr, Function}
 

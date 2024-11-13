@@ -1,10 +1,13 @@
  module LinA
 
-using Roots
 using Calculus
+using CDDLib
+using ForwardDiff
 using GeneralizedGenerated
+using Polyhedra
+using Roots
 
-
+import Base.-, Base.+, Base.show
 
 export Linearize , LinearBounding, SimultaneousLin
 export Absolute, Relative, Best, Under, Over, HeuristicLin, ExactLin
