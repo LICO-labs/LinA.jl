@@ -78,6 +78,20 @@ function scale_function(f::Ef, s::Real, x1::Real, x2::Real)::Ef
     end
 end
 
+function invert_function(f::Ef)::Ef
+    if f isa Expr
+        return :( - eval(f) )
+    elseif f isa Function
+        return x -> - f(x)
+    end 
+end
+
+function is_mostly_negative(f::Ef, x1::Real, x2::Real)::Bool
+    resmax = optimize(x -> -f(x), x1, x2)
+    maxf = - minimum(resmax)
+    return maxf < EPS
+end
+
 function scale_linearpiece(lp::LinearPiece, s::Real, x1::Real, x2::Real)::LinearPiece
     ymin = x1 + lp.xMin * (x2 - x1) 
     ymax = x1 + lp.xMax * (x2 - x1)
@@ -86,13 +100,31 @@ function scale_linearpiece(lp::LinearPiece, s::Real, x1::Real, x2::Real)::Linear
     return LinearPiece(ymin, ymax, ap, bp, x -> ap * x + bp)
 end
 
+function construct_constant_piece(f::Ef, x1::Real, x2::Real, bounding::BoundingType)
+    if bounding == Under()
+        opt = optimize(x -> f(x), x1, x2)
+        b = minimum(opt)
+    elseif bounding == Over()
+        opt = optimize(x -> -f(x), x1, x2)
+        b = -minimum(opt)
+    else
+        b = f((x1 + x2) / 2)
+    end
+    return LinearPiece(x1, x2, 0.0, b, x -> b)
+end
+    
+function invert_linearpiece(lp::LinearPiece, inv::Int64)
+    if inv == 1 return lp
+    else
+        return LinearPiece(lp.xMin, lp.xMax, -lp.a, -lp.b, x -> -lp.fct(x))
+    end
+end
+
 function find_zeros(f::Ef, x1::Real, x2::Real)::Vector{Real}
-    println("root finding with x1 = $x1, x2 = $x2, diff of $(x2 - x1)")
     zs = IntervalRootFinding.roots(f, interval(x1, x2))
     if isempty(zs) return Float64[] end
     zmin = argmin(z -> min(abs(f(z.region.bareinterval.lo)), abs(f(z.region.bareinterval.hi))), zs)
     zvec = abs(f(zmin.region.bareinterval.lo)) < abs(f(zmin.region.bareinterval.hi)) ? Float64[zmin.region.bareinterval.lo] : Float64[zmin.region.bareinterval.hi]
-    println("zvec = $zvec, with f(x) = $(f(zvec[begin]))")
     return zvec
 end
 

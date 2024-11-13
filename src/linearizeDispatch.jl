@@ -60,11 +60,48 @@ function Linearize(expr_fct::Ef,x1::Real,x2::Real, e::ErrorType,algorithm::Exact
     return ScaledLinearize(expr_fct, x1, x2, e, ExactLin, bounding, ConcavityChanges)
 end
 
+# The function ScaleLinearize will 
+# 1) invert a negative function to make it positive; 
+# 2) scale it so it is defined in the interval [0, 1] and such that max(f(x): x in [0, 1]) = 1.
 function ScaledLinearize(f::Ef, x1::Real, x2::Real, e::ErrorType, LinAlg::Union{Type{ExactLin}, Type{HeuristicLin}}, bounding::BoundingType, concavity_changes)::Vector{LinearPiece}
-    s = get_scale(f, x1, x2)
-    g = scale_function(f, s, x1, x2)
+    if is_mostly_negative(f, x1, x2)
+        invert = -1
+        g = invert_function(f)
+        new_bounding = bounding isa Under ? Over() : (bounding isa Over ? Under() : Best())
+    else 
+        invert = 1
+        g = f
+        new_bounding = bounding
+    end
+    s = get_scale(g, x1, x2)
+    h = scale_function(g, s, x1, x2)
     newe = e isa Absolute ? Absolute(e.delta / s) : e
-    lps = LinAlg(g, 0.0, 1.0, newe; bounding = bounding, ConcavityChanges = concavity_changes)
-    lps = remove_infeasibilities(lps, g, bounding)  
-    return [scale_linearpiece(lp, s, x1, x2) for lp in lps]
+
+    # find roots of f and prevent running the main alg at them
+    rts = IntervalRootFinding.roots(x -> h(x), interval(0, 1))
+    breakpoints = [0.0, 1.0]
+    for z in rts
+        zmid = (z.region.bareinterval.lo + z.region.bareinterval.hi) / 2 
+        if zmid > 1e-5
+            push!(breakpoints, zmid - 1e-5)
+        end
+        if zmid < 1 - 1e-5
+            push!(breakpoints, zmid + 1e-5)
+        end
+    end
+    sort!(breakpoints)
+    lps = LinearPiece[]
+    for i in 1:length(breakpoints) - 1
+        xp0, xpf = breakpoints[i], breakpoints[i + 1]
+        if xpf - xp0 < EPS
+        elseif xpf - xp0 < 1e-4
+            lp = construct_constant_piece(h, xp0, xpf, new_bounding)
+            push!(lps, lp)
+        else
+            newlps = LinAlg(h, xp0, xpf, newe; bounding = new_bounding, ConcavityChanges = concavity_changes)
+            newlps = remove_infeasibilities(newlps, h, new_bounding)  
+            append!(lps, newlps)
+        end
+    end
+    return [invert_linearpiece(scale_linearpiece(lp, s, x1, x2), invert) for lp in lps]
 end

@@ -80,6 +80,8 @@ struct Relative <: ErrorType
     percent::Real
 end
 
+delta_or_percent(e::ErrorType) = e isa Relative ? e.percent : e.delta
+
 abstract type BoundingType end
 
 struct Best <:BoundingType end

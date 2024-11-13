@@ -1,13 +1,4 @@
-
-
-
-
-
-
-
- function ConcavitySplit(x1::Real,x2::Real,expr_fnc::Ef)
-
-     println("running concativity split in the interval [$x1, $x2]")
+function ConcavitySplit(x1::Real,x2::Real,expr_fnc::Ef)
     d2_f = Derive(Derive(expr_fnc))
     #special case for constant second derivative
     typeof(d2_f) <: Number && return Float64[]

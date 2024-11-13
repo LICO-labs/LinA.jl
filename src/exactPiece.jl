@@ -11,7 +11,7 @@ Computes the maximal linear piece starting at `start` which lies in between `low
 - `lower` : lower bound of the corridor
 - `upper` : upper bound of the corridor
 """
-function ExactPiece(start::Real,maximum::Real,lower,upper)
+function ExactPiece(start::Real,maximum::Real,e::ErrorType,lower,upper)
     #TODO: add epsilon as an argument for the user
     #TODO: If intersections are epsilon close skip intersections
     
@@ -31,7 +31,6 @@ function ExactPiece(start::Real,maximum::Real,lower,upper)
         while crossing
             
             sort!(pts)
-            println("points are $pts")
             data = FctSample.(pts, lower,upper)
             line = ORourke(data)
 

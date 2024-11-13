@@ -27,7 +27,7 @@ function CorridorFromInfo(x1::Real,x2::Real,expr_fct::Ef,e::ErrorType,bounding::
 
     df = y::Real -> TempEval(y)
     #note that Upper return the function and it's derivative
-    return x1,x2,Lower(x1,x2,f,e,bounding),Upper(x1,x2,f,df,e,bounding)...
+    return x1,x2,e,Lower(x1,x2,f,e,bounding),Upper(x1,x2,f,df,e,bounding)...
 end
 
 #In the case of underestimation or overestimation one of the bound is the function itself
