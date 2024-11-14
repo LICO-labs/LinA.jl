@@ -125,4 +125,4 @@ Derive(expr::Expr) = Calculus.simplify(differentiate(expr, :x))
 Derive(f::Function) = z->ForwardDiff.gradient(x->f(x[1]),[z])[1]
 #ForwardDiff.derivative(f, x::Real)
 
-const EPS = 1e-9
+const EPS = 1e-7

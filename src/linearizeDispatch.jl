@@ -98,10 +98,18 @@ function ScaledLinearize(f::Ef, x1::Real, x2::Real, e::ErrorType, LinAlg::Union{
             lp = construct_constant_piece(h, xp0, xpf, new_bounding)
             push!(lps, lp)
         else
-            newlps = LinAlg(h, xp0, xpf, newe; bounding = new_bounding, ConcavityChanges = concavity_changes)
-            newlps = remove_infeasibilities(newlps, h, new_bounding)  
+            newlps = LinAlg(h, xp0, xpf, newe; bounding = new_bounding, ConcavityChanges = deepcopy(concavity_changes))
+            # newlps = remove_infeasibilities(newlps, h, new_bounding)
+            res = [optimize(x -> h(x) - lp(x), lp.xMin, lp.xMax) for lp in newlps]
+            res = [minimum(r) for r in res]
+            # println("res = $(res)")
             append!(lps, newlps)
         end
     end
-    return [invert_linearpiece(scale_linearpiece(lp, s, x1, x2), invert) for lp in lps]
+    newlps = [invert_linearpiece(scale_linearpiece(lp, s, x1, x2), invert) for lp in lps]
+    res = [optimize(x -> f(x) - lp(x), lp.xMin, lp.xMax) for lp in newlps]
+    res = [minimum(r) for r in res]
+    println("hola")
+    println("res = $(res)")
+    return newlps
 end
