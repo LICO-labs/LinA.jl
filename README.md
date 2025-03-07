@@ -2,9 +2,9 @@
 [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://lico-labs.github.io/LinA.jl/) [![DOI](https://zenodo.org/badge/510425449.svg)](https://doi.org/10.5281/zenodo.14052031)
 
 
-LinA is a state-of-the-art piecewise linear approximation package which approximates (or over/under-estimates) univariate diffentiable $\mathbb{R} \rightarrow \mathbb{R}$ functions with an optimal (in term of number of segments) piecewise linear function given an error metric.
+LinA is a state-of-the-art piecewise linear approximation package which approximates (or over/under-estimates) univariate differentiable $\mathbb{R} \rightarrow \mathbb{R}$ functions with an optimal (in terms of number of segments) piecewise linear function given an error metric.
 Both absolute and relative errors are implemented. It is also possible to add custom error types. LinA works with expressions as well as with native Julia functions.
-Details of the algorithms can be found in [this paper.](https://hal.archives-ouvertes.fr/hal-03336003)
+Details of the algorithms can be found in [this paper.](https://link.springer.com/article/10.1007/s12532-024-00274-8)
 
 ## Installation
 
@@ -34,7 +34,7 @@ julia> pwl = Linearize(:(x^2),-10,10,Absolute(2))
 ```
 **Note:** by default LinA uses the hybrid heuristic algorithm. To use the (slightly slower) exact algorithm simply add `ExactLin()` as an argument.
 
-You can now call `pwl` as a julia function such as
+You can now call `pwl` as a Julia function such as
 
 ```julia
 julia> pwl(2)
@@ -60,4 +60,4 @@ plot(x->pwl(x),-10,10)
 
 ## Citing
 
-If you have used our library and wish to cite our work (which we greatly encourage) use the reference of [our paper.](https://hal.archives-ouvertes.fr/hal-03336003) Starring the _LinA.jl_ repository on GitHub is also appreciated.
+If you have used our library and wish to cite our work (which we greatly encourage) use the reference of [our paper.](https://link.springer.com/article/10.1007/s12532-024-00274-8) Starring the _LinA.jl_ repository on GitHub is also appreciated.
