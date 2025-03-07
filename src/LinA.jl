@@ -1,4 +1,4 @@
- module LinA
+module LinA
 
 using Calculus
 using CDDLib
@@ -9,7 +9,7 @@ using Roots
 
 import Base.-, Base.+, Base.show
 
-export Linearize , LinearBounding, SimultaneousLin
+export Linearize, LinearBounding, SimultaneousLin
 export Absolute, Relative, Best, Under, Over, HeuristicLin, ExactLin
 export isContinuous, breakpoints
 
