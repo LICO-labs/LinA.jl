@@ -10,13 +10,15 @@ Minus(f::Function) = x -> -f(x)
 ParaToFncLin(a, b) = x -> a * x + b
 
 
-struct LinearPiece <: Function
-    xMin::Real
-    xMax::Real
-    a::Real
-    b::Real
+struct LinearPiece{T} <: Function
+    xMin::T
+    xMax::T
+    a::T
+    b::T
     fct::Function
 end
+
+LinearPiece(xMin,xMax,a,b,fct) = LinearPiece(Float64.([xMin,xMax,a,b])...,fct)
 
 
 function Base.show(io::IO, ::MIME"text/plain", m::LinearPiece)
